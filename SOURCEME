@@ -1,0 +1,14 @@
+HLS_COMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+function hls {
+  if [[ "$1" == */ ]];
+  then
+    LS_RESULT=$(ls -dl $1*)
+  else
+    LS_RESULT=$(ls -dl $1/*)
+  fi
+  echo "$LS_RESULT"
+  python $HLS_COMPLETE_DIR/update_completions.py -d $1 -l "$LS_RESULT"
+}
+
+source $HLS_COMPLETE_DIR/hlscomplete_autocomplete.sh
