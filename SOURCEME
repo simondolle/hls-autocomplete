@@ -1,18 +1,12 @@
 HLS_COMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function hls {
-  if [[ "$1" == */ ]];
-  then
-    LS_RESULT=$(ls -dl $1*)
-  else
-    LS_RESULT=$(ls -dl $1/*)
-  fi
-  #LS_RESULT=$(hdfs dfs -ls $1)
+  LS_RESULT=$(hdfs dfs -ls $1)
   LS_RETURN_CODE=$?
   echo "$LS_RESULT"
 
   #update cache
-  if [ LS_RETURN_CODE == 0 ]; then
+  if [ $LS_RETURN_CODE == 0 ]; then
     python $HLS_COMPLETE_DIR/update_completions.py -d $1 -l "$LS_RESULT"
   fi
 }
