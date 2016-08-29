@@ -12,7 +12,7 @@ def update_directory(directory, ls_results, cache):
         if path_chunk not in cache:
             cache[path_chunk] = {}
         cache = cache[path_chunk]
-    basenames = [os.path.basename(ls_result) for ls_result in ls_results]
+    basenames = [os.path.basename(ls_result.path) for ls_result in ls_results]
 
     for basename in basenames:
         if basename not in cache:
@@ -21,6 +21,14 @@ def update_directory(directory, ls_results, cache):
     old_entries = set(cache.keys()).difference(set(basenames))
     for old_entry in old_entries:
         del cache[old_entry]
+
+class FileStatus(object):
+    def __init__(self, path, is_dir):
+        self.path = path
+        self.is_dir = is_dir
+
+    def __eq__(self, other):
+        return self.path == other.path and self.is_dir == other.is_dir
 
 class LsParser(object):
     def __init__(self):
@@ -35,7 +43,7 @@ class LsParser(object):
         if m is None:
             return None
         is_dir = m.group(1).startswith("d")
-        return is_dir, filename
+        return FileStatus(filename, is_dir)
 
     def parse(self, output):
         result = [self.parse_line(line)[1] for line in output.split("\n")]

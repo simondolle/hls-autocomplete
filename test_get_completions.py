@@ -1,6 +1,8 @@
 import unittest
 import get_completions
 import update_completions
+from update_completions import FileStatus
+
 
 class TestGetCompletions(unittest.TestCase):
 
@@ -84,7 +86,8 @@ class TestUpdateDirectory(unittest.TestCase):
 
     def test_new_directory(self):
         update_completions.update_directory("/user/recocomputer/bestofs/ussrPV",
-                ["/user/recocomputer/bestofs/ussrPV/output1", "/user/recocomputer/bestofs/ussrPV/output2"],
+                [FileStatus("/user/recocomputer/bestofs/ussrPV/output1", True),
+                    FileStatus("/user/recocomputer/bestofs/ussrPV/output2", True)],
                 self.json)
         expected_cache = {
             "user": {
@@ -107,7 +110,9 @@ class TestUpdateDirectory(unittest.TestCase):
 
     def test_update_directory(self):
         update_completions.update_directory("/user/recocomputer/dev",
-                ["/user/recocomputer/dev/s.dolle", "/user/recocomputer/dev/s.yachaoui", "/user/recocomputer/dev/pe.mazare"],
+                [FileStatus("/user/recocomputer/dev/s.dolle", True),
+                    FileStatus("/user/recocomputer/dev/s.yachaoui", True),
+                    FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                 self.json)
         expected_cache = {
             "user": {
@@ -126,7 +131,9 @@ class TestUpdateDirectory(unittest.TestCase):
     def test_update_empty_cache(self):
         cache = {}
         update_completions.update_directory("/user/recocomputer/dev",
-                 ["/user/recocomputer/dev/s.dolle", "/user/recocomputer/dev/s.yachaoui", "/user/recocomputer/dev/pe.mazare"],
+                 [FileStatus("/user/recocomputer/dev/s.dolle", True),
+                     FileStatus("/user/recocomputer/dev/s.yachaoui", True),
+                     FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                  cache)
         expected_cache = {
             "user": {
@@ -145,17 +152,17 @@ class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):
         parser = update_completions.LsParser()
         line = "drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music"
-        self.assertEquals((True, "/Users/simon/Music"), parser.parse_line(line))
+        self.assertEquals(update_completions.FileStatus("/Users/simon/Music", True), parser.parse_line(line))
 
     def test_file_case(self):
         parser = update_completions.LsParser()
         line = "-rwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music"
-        self.assertEquals((False, "/Users/simon/Music"), parser.parse_line(line))
+        self.assertEquals(update_completions.FileStatus("/Users/simon/Music", False), parser.parse_line(line))
 
     def test_space_in_name(self):
         parser = update_completions.LsParser()
         line = "drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"
-        self.assertEquals((True, "/Users/simon/Personal Documents"), parser.parse_line(line))
+        self.assertEquals(update_completions.FileStatus("/Users/simon/Personal Documents", True), parser.parse_line(line))
 
 
 
