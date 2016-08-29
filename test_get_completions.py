@@ -145,12 +145,17 @@ class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):
         parser = update_completions.LsParser()
         line = "drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music"
-        self.assertEquals("/Users/simon/Music", parser.parse_line(line))
+        self.assertEquals((True, "/Users/simon/Music"), parser.parse_line(line))
+
+    def test_file_case(self):
+        parser = update_completions.LsParser()
+        line = "-rwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music"
+        self.assertEquals((False, "/Users/simon/Music"), parser.parse_line(line))
 
     def test_space_in_name(self):
         parser = update_completions.LsParser()
         line = "drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"
-        self.assertEquals("/Users/simon/Personal Documents", parser.parse_line(line))
+        self.assertEquals((True, "/Users/simon/Personal Documents"), parser.parse_line(line))
 
 
 

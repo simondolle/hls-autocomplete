@@ -30,10 +30,15 @@ class LsParser(object):
         m = re.search(" (/.*$)", line)
         if m is None:
             return None
-        return m.group(1)
+        filename = m.group(1)
+        m = re.match("^([rwxd+-]+)", line)
+        if m is None:
+            return None
+        is_dir = m.group(1).startswith("d")
+        return is_dir, filename
 
     def parse(self, output):
-        result = [self.parse_line(line) for line in output.split("\n")]
+        result = [self.parse_line(line)[1] for line in output.split("\n")]
         return [p for p in result if p is not None]
 
 if __name__ == "__main__":
