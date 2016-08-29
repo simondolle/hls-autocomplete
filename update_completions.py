@@ -33,10 +33,8 @@ class LsParser(object):
         return m.group(1)
 
     def parse(self, output):
-        return [self.parse_line(line) for line in output.split("\n")]
-
-
-
+        result = [self.parse_line(line) for line in output.split("\n")]
+        return [p for p in result if p is not None]
 
 if __name__ == "__main__":
 
