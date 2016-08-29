@@ -8,13 +8,45 @@ class TestGetCompletions(unittest.TestCase):
 
     def setUp(self):
         self.json = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {"richcatalog":{}},
-                    "dev": {
-                        "s.dolle": {"img.jpg": {}},
-                        "s.yachaoui": {},
-                        "b.delayen": {}
+            "is_dir": True,
+            "content": {
+                "user": {
+                    "is_dir": True,
+                    "content": {
+                        "recocomputer": {
+                            "is_dir": True,
+                            "content": {
+                                "bestofs": {
+                                    "is_dir": True,
+                                    "content": {
+                                        "richcatalog":{
+                                            "is_dir": True,
+                                            "content": {}}
+                                    }
+                                },
+                                "dev": {
+                                    "is_dir": True,
+                                    "content": {
+                                        "s.dolle": {
+                                            "is_dir": True,
+                                            "content": {
+                                                "img.jpg": {
+                                                    "is_dir": False
+                                                }
+                                            },
+                                        },
+                                        "s.yachaoui": {
+                                            "is_dir": True,
+                                            "content": {}
+                                        },
+                                        "b.delayen": {
+                                             "is_dir": True,
+                                            "content": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

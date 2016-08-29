@@ -21,30 +21,35 @@ def split_path(path):
     path_chunks = [chunk for chunk in path_chunks if len(chunk) != 0]
     return path_chunks
 
-def append_slash(path):
-    base, ext = os.path.splitext(path)
-    if len(ext) == 3 or len(ext) == 4:
-        return path
-    else:
+def append_slash(path, is_dir):
+    if is_dir:
         return path + "/"
+    else:
+        return path
 
 def get_completions(path, cache):
     dirname = os.path.dirname(path)
     path_chunks = split_path(dirname)
     for path_chunk in path_chunks:
-        if path_chunk not in cache:
+        if path_chunk not in cache["content"]:
             return []
-        cache = cache[path_chunk]
+        cache = cache["content"][path_chunk]
     if not type(cache) == type(dict()):
         return []
-    result = cache.keys()
+
+    result = []
+    if "content" not in cache:
+        return []
+    for key, value in cache["content"].items():
+        result.append((key, value["is_dir"]))
+
     if not path.endswith("/"):
         partial_basename = os.path.basename(path)
-        result = [s for s in result if s.startswith(partial_basename)]
+        result = [s for s in result if s[0].startswith(partial_basename)]
 
     if len(path_chunks) == 0:
-        result = ["/" + r for r in result]
-    result = [append_slash(r) for r in result]
+        result = [("/" + r[0], r[1]) for r in result]
+    result = [append_slash(r[0], r[1]) for r in result]
     result = [os.path.join(dirname, r) for r in result]
     return sorted(result)
 
