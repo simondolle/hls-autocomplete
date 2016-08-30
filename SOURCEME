@@ -4,7 +4,6 @@ function hls {
   LS_RESULT=$(hdfs dfs -ls $1)
   LS_RETURN_CODE=$?
   echo "$LS_RESULT"
-
   #update cache
   if [ $LS_RETURN_CODE == 0 ]; then
     python $HLS_COMPLETE_DIR/update_completions.py -d $1 -l "$LS_RESULT"
