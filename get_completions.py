@@ -12,7 +12,10 @@ def get_cache_path():
 def load_cache():
     input_file = get_cache_path()
     if not os.path.exists(input_file):
-        return {}
+        return {
+            "is_dir": True,
+            "content": {}
+        }
     else:
         return json.load(open(input_file))
 
