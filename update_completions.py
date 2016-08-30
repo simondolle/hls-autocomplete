@@ -15,15 +15,15 @@ def update_directory(directory, ls_results, cache):
                         "content": {}
                     }
         cache = cache["content"][path_chunk]
-    basenames = [os.path.basename(ls_result.path) for ls_result in ls_results]
-    for basename in basenames:
+    basenames = [(os.path.basename(ls_result.path), ls_result.is_dir) for ls_result in ls_results]
+    for basename, is_dir in basenames:
         if basename not in cache["content"]:
             cache["content"][basename] = {
-                        "is_dir": True,
+                        "is_dir": is_dir,
                         "content": {}
                     }
 
-    old_entries = set(cache["content"].keys()).difference(set(basenames))
+    old_entries = set(cache["content"].keys()).difference(set([basename for basename, is_dir in basenames]))
     for old_entry in old_entries:
         del cache["content"][old_entry]
 
