@@ -51,7 +51,7 @@ class LsParser(object):
         return FileStatus(filename, is_dir)
 
     def parse(self, output):
-        result = [self.parse_line(line)[1] for line in output.split("\n")]
+        result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
 
 if __name__ == "__main__":
