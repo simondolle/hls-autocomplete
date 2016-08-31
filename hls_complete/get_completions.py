@@ -56,7 +56,7 @@ def get_completions(path, cache):
     result = [os.path.join(dirname, r) for r in result]
     return sorted(result)
 
-if __name__ == "__main__":
+def main():
     hls_cache = load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
@@ -64,3 +64,6 @@ if __name__ == "__main__":
         completions = ["'%s'"%s for s in completions]
         result = " ".join(completions)
         print result.encode("utf-8")
+
+if __name__ == "__main__":
+    main()

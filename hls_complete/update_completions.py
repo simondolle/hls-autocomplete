@@ -54,8 +54,7 @@ class LsParser(object):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
 
-if __name__ == "__main__":
-
+def main():
     parser = OptionParser()
     parser.add_option("-d", dest="directory")
     parser.add_option("-l", dest="ls_result")
@@ -77,3 +76,6 @@ if __name__ == "__main__":
 
     update_directory(options.directory, ls_result, hls_cache)
     json.dump(hls_cache, open(get_completions.get_cache_path(), "w"), indent=4)
+
+if __name__ == "__main__":
+    main()

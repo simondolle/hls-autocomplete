@@ -6,7 +6,7 @@ function hls {
   echo "$LS_RESULT"
   #update cache
   if [ $LS_RETURN_CODE == 0 ]; then
-    python $HLS_COMPLETE_DIR/update_completions.py -d $1 -l "$LS_RESULT"
+    _hls_update_completions -d $1 -l "$LS_RESULT"
   fi
 }
 
