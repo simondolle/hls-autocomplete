@@ -53,6 +53,7 @@ setup(
         'console_scripts': [
             '_hls_get_completions = hls_complete.get_completions:main',
             '_hls_update_completions = hls_complete.update_completions:main',
+            'hls = hls_complete.hls:hls'
         ]
     },
     test_suite='tests',

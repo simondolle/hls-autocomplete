@@ -1,13 +1,1 @@
-HLS_COMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-function hls {
-  LS_RESULT=$(hdfs dfs -ls $1)
-  LS_RETURN_CODE=$?
-  echo "$LS_RESULT"
-  #update cache
-  if [ $LS_RETURN_CODE == 0 ]; then
-    _hls_update_completions -d $1 -l "$LS_RESULT"
-  fi
-}
-
 source $HLS_COMPLETE_DIR/hlscomplete_autocomplete.sh
