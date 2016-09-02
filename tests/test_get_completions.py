@@ -1,7 +1,5 @@
 import unittest
-import hls_complete.get_completions
 from hls_complete import get_completions
-import hls_complete.update_completions
 from hls_complete import update_completions
 from hls_complete.update_completions import FileStatus
 
@@ -238,9 +236,6 @@ class TestUpdateDirectory(unittest.TestCase):
                     }
                 }
             }
-        import json
-        print json.dumps(self.json, sort_keys=True)
-        print json.dumps(expected_cache, sort_keys=True)
         self.assertEquals(expected_cache, self.json)
 
     def test_update_empty_cache(self):
