@@ -1,5 +1,5 @@
 include LICENSE
 include AUTHORS.rst
 
-recursive_include test *
-recursive_exclude * *.py[co]
+recursive-include tests *
+recursive-exclude * *.py[co]

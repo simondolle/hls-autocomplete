@@ -55,6 +55,6 @@ setup(
             'hls = hls_complete.hls:hls'
         ]
     },
-    test_suite='tests',
-    tests_require=test_requirements
+    #test_suite='tests'
+    test_suite = 'nose.collector'
 )

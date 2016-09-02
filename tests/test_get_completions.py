@@ -1,7 +1,9 @@
 import unittest
-import get_completions
-import update_completions
-from update_completions import FileStatus
+import hls_complete.get_completions
+from hls_complete import get_completions
+import hls_complete.update_completions
+from hls_complete import update_completions
+from hls_complete.update_completions import FileStatus
 
 
 class TestGetCompletions(unittest.TestCase):
@@ -103,16 +105,41 @@ class TestGetCompletions(unittest.TestCase):
 
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
+        #self.maxDiff = None
         self.json = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {"richcatalog": {}},
-                    "dev": {
-                        "s.dolle": {"richcatalog": {}},
-                        "s.yachaoui": {},
-                        "b.delayen": {}
+            "is_dir": True,
+            "content": {
+                    "user": {
+                        "is_dir": True,
+                        "content": {
+                            "recocomputer": {
+                                "is_dir": True,
+                                "content": {
+                                    "bestofs": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "richcatalog": {
+                                                "is_dir": True,
+                                                "content": {}
+                                                }
+                                            }
+                                        },
+                                    "dev": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "s.dolle": {
+                                                "is_dir": True,
+                                                "content": {
+                                                    "richcatalog": {"is_dir": True, "content": {}}}
+                                                },
+                                            "s.yachaoui": {"is_dir": True, "content": {}},
+                                            "b.delayen": {"is_dir": True, "content": {}}
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
             }
         }
 
@@ -121,23 +148,52 @@ class TestUpdateDirectory(unittest.TestCase):
                 [FileStatus("/user/recocomputer/bestofs/ussrPV/output1", True),
                     FileStatus("/user/recocomputer/bestofs/ussrPV/output2", True)],
                 self.json)
+
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {"richcatalog": {},
-                                "ussrPV" : {
-                                    "output1": {},
-                                    "output2": {}
+            "is_dir": True,
+            "content": {
+                    "user": {
+                        "is_dir": True,
+                        "content": {
+                            "recocomputer": {
+                                "is_dir": True,
+                                "content": {
+                                    "bestofs": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "richcatalog": {
+                                                "is_dir": True,
+                                                "content": {}
+                                            },
+
+                                            "ussrPV": {
+                                                "is_dir": True,
+                                                "content": {
+                                                    "output1": {"is_dir": True, "content": {}},
+                                                    "output2": {"is_dir": True, "content": {}}
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "dev": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "s.dolle": {
+                                                "is_dir": True,
+                                                "content": {
+                                                    "richcatalog": {"is_dir": True, "content": {}}}
+                                                },
+                                            "s.yachaoui": {"is_dir": True, "content": {}},
+                                            "b.delayen": {"is_dir": True, "content": {}}
+                                        }
                                     }
-                                },
-                    "dev": {
-                        "s.dolle": {"richcatalog": {}},
-                        "s.yachaoui": {},
-                        "b.delayen": {}
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
+
         self.assertEquals(expected_cache, self.json)
 
     def test_update_directory(self):
@@ -147,37 +203,82 @@ class TestUpdateDirectory(unittest.TestCase):
                     FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                 self.json)
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {"richcatalog": {}},
-                    "dev": {
-                        "s.dolle": {"richcatalog": {}},
-                        "s.yachaoui": {},
-                        "pe.mazare": {}
+            "is_dir": True,
+            "content": {
+                    "user": {
+                        "is_dir": True,
+                        "content": {
+                            "recocomputer": {
+                                "is_dir": True,
+                                "content": {
+                                    "bestofs": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "richcatalog": {
+                                                "is_dir": True,
+                                                "content": {}
+                                            },
+                                        }
+                                    },
+                                    "dev": {
+                                        "is_dir": True,
+                                        "content": {
+                                            "s.dolle": {
+                                                "is_dir": True,
+                                                "content": {
+                                                    "richcatalog": {"is_dir": True, "content": {}}}
+                                                },
+                                            "s.yachaoui": {"is_dir": True, "content": {}},
+                                            "pe.mazare": {"is_dir": True, "content": {}}
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
+        import json
+        print json.dumps(self.json, sort_keys=True)
+        print json.dumps(expected_cache, sort_keys=True)
         self.assertEquals(expected_cache, self.json)
 
     def test_update_empty_cache(self):
-        cache = {}
+        cache = {
+            "is_dir": True,
+            "content": {}
+        }
         update_completions.update_directory("/user/recocomputer/dev",
                  [FileStatus("/user/recocomputer/dev/s.dolle", True),
                      FileStatus("/user/recocomputer/dev/s.yachaoui", True),
                      FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                  cache)
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "dev": {
-                        "s.dolle": {},
-                        "s.yachaoui": {},
-                        "pe.mazare": {}
+            "is_dir": True,
+            "content": {
+                "user": {
+                    "is_dir": True,
+                    "content": {
+                        "recocomputer": {
+                            "is_dir": True,
+                            "content": {
+                                "dev": {
+                                    "is_dir": True,
+                                    "content": {
+                                        "s.dolle": {"is_dir": True, "content": {}},
+                                        "s.yachaoui": {"is_dir": True, "content": {}},
+                                        "pe.mazare": {"is_dir": True, "content": {}}
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+        import json
+        print json.dumps(self.json, sort_keys=True)
+        print json.dumps(expected_cache, sort_keys=True)
         self.assertEquals(expected_cache, cache)
 
 class TestLsParser(unittest.TestCase):
