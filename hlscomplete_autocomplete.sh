@@ -5,6 +5,10 @@ _script()
   cur="${COMP_WORDS[COMP_CWORD]}"
   HLS_COMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   _script_commands=$(python $HLS_COMPLETE_DIR/hls_complete/get_completions.py $cur)
+  if [[ $_script_commands == "" ]]; then
+    hls $cur &> /dev/null
+    _script_commands=$(python $HLS_COMPLETE_DIR/hls_complete/get_completions.py $cur)
+  fi
   COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
   return 0
 }
