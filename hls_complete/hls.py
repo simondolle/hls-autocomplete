@@ -8,7 +8,7 @@ import hls_complete.get_completions
 import hls_complete.update_completions
 
 def hls(path):
-    p = subprocess.Popen(["ls", "-l", path], stdout=subprocess.PIPE)
+    p = subprocess.Popen(["hdfs", "dfs", "-ls", path], stdout=subprocess.PIPE)
     hls_result = p.communicate()[0]
     hls_return_code = p.returncode
     print(hls_result, end="")
