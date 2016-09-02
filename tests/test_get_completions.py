@@ -276,9 +276,6 @@ class TestUpdateDirectory(unittest.TestCase):
                 }
             }
         }
-        import json
-        print json.dumps(self.json, sort_keys=True)
-        print json.dumps(expected_cache, sort_keys=True)
         self.assertEquals(expected_cache, cache)
 
 class TestLsParser(unittest.TestCase):
