@@ -3,7 +3,12 @@ _script()
   local cur
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
-  _script_commands=$(_hls_get_completions $cur)
+  COMMAND=$(_hls_get_completions $cur)
+  _script_commands=$COMMAND
+  if [[ $_script_commands == "" ]]; then
+    hls $cur &> /dev/null
+    _script_commands=$COMMAND
+  fi
   COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
   return 0
 }
