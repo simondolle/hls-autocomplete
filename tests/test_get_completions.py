@@ -8,18 +8,17 @@ class TestGetCompletions(unittest.TestCase):
 
     def setUp(self):
         self.json = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {
-                        "richcatalog": {}
+            "Users": {
+                "simon": {
+                    "Music": {
+                        "Spotify": {}
                     },
-                    "dev": {
-                        "s.dolle": {
-                            "img.jpg": None
-                        },
-                        "s.yachaoui": {},
-                        "b.delayen": {}
-                    }
+                    "Documents": {
+                        "work": {
+                            "CV.doc": None
+                        }
+                    },
+                    "Dropbox": {}
                 }
             }
         }
@@ -27,49 +26,49 @@ class TestGetCompletions(unittest.TestCase):
 
     def test_nominal_case(self):
         actual_result = get_completions.get_completions(
-                "/user/recocomputer/dev/s.", self.json)
-        expected_result = ["/user/recocomputer/dev/s.dolle/", "/user/recocomputer/dev/s.yachaoui/"]
+                "/Users/simon/D", self.json)
+        expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_directory_case(self):
         actual_result = get_completions.get_completions(
-                "/user/recocomputer/dev/", self.json)
-        expected_result = ["/user/recocomputer/dev/b.delayen/", "/user/recocomputer/dev/s.dolle/", "/user/recocomputer/dev/s.yachaoui/"]
+                "/Users/simon/", self.json)
+        expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_unexisting_directory(self):
         actual_result = get_completions.get_completions(
-                "/user/recocomputer/t", self.json)
+                "/Users/toto/t", self.json)
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_too_long_path(self):
         actual_result = get_completions.get_completions(
-                "/user/recocomputer/dev/s.dolle/toto", self.json)
+                "/Users/simon/Documents/work/old", self.json)
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_root_only(self):
         actual_result = get_completions.get_completions(
                 "/", self.json)
-        expected_result = ["/user/"]
+        expected_result = ["/Users/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_second_level(self):
         actual_result = get_completions.get_completions(
-                "/user/re", self.json)
-        expected_result = ["/user/recocomputer/"]
+                "/Users/si", self.json)
+        expected_result = ["/Users/simon/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_file_with_extension(self):
         actual_result = get_completions.get_completions(
-                "/user/recocomputer/dev/s.dolle/im", self.json)
-        expected_result = ["/user/recocomputer/dev/s.dolle/img.jpg"]
+                "/Users/simon/Documents/work/C", self.json)
+        expected_result = ["/Users/simon/Documents/work/CV.doc"]
         self.assertEquals(expected_result, actual_result)
 
     def test_empty_json(self):
         actual_result = get_completions.get_completions(
-                "/user", {})
+                "/Users", {})
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
