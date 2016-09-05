@@ -8,49 +8,22 @@ class TestGetCompletions(unittest.TestCase):
 
     def setUp(self):
         self.json = {
-            "is_dir": True,
-            "content": {
-                "user": {
-                    "is_dir": True,
-                    "content": {
-                        "recocomputer": {
-                            "is_dir": True,
-                            "content": {
-                                "bestofs": {
-                                    "is_dir": True,
-                                    "content": {
-                                        "richcatalog":{
-                                            "is_dir": True,
-                                            "content": {}}
-                                    }
-                                },
-                                "dev": {
-                                    "is_dir": True,
-                                    "content": {
-                                        "s.dolle": {
-                                            "is_dir": True,
-                                            "content": {
-                                                "img.jpg": {
-                                                    "is_dir": False
-                                                }
-                                            },
-                                        },
-                                        "s.yachaoui": {
-                                            "is_dir": True,
-                                            "content": {}
-                                        },
-                                        "b.delayen": {
-                                             "is_dir": True,
-                                            "content": {}
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            "user": {
+                "recocomputer": {
+                    "bestofs": {
+                        "richcatalog": {}
+                    },
+                    "dev": {
+                        "s.dolle": {
+                            "img.jpg": None
+                        },
+                        "s.yachaoui": {},
+                        "b.delayen": {}
                     }
                 }
             }
         }
+
 
     def test_nominal_case(self):
         actual_result = get_completions.get_completions(
@@ -103,41 +76,20 @@ class TestGetCompletions(unittest.TestCase):
 
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
-        #self.maxDiff = None
         self.json = {
-            "is_dir": True,
-            "content": {
-                    "user": {
-                        "is_dir": True,
-                        "content": {
-                            "recocomputer": {
-                                "is_dir": True,
-                                "content": {
-                                    "bestofs": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "richcatalog": {
-                                                "is_dir": True,
-                                                "content": {}
-                                                }
-                                            }
-                                        },
-                                    "dev": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "s.dolle": {
-                                                "is_dir": True,
-                                                "content": {
-                                                    "richcatalog": {"is_dir": True, "content": {}}}
-                                                },
-                                            "s.yachaoui": {"is_dir": True, "content": {}},
-                                            "b.delayen": {"is_dir": True, "content": {}}
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            "user": {
+                "recocomputer": {
+                    "bestofs": {
+                        "richcatalog": {}
+                    },
+                    "dev": {
+                        "s.dolle": {
+                            "richcatalog": {}
+                        },
+                        "s.yachaoui": {},
+                        "b.delayen": {}
                     }
+                }
             }
         }
 
@@ -148,50 +100,25 @@ class TestUpdateDirectory(unittest.TestCase):
                 self.json)
 
         expected_cache = {
-            "is_dir": True,
-            "content": {
-                    "user": {
-                        "is_dir": True,
-                        "content": {
-                            "recocomputer": {
-                                "is_dir": True,
-                                "content": {
-                                    "bestofs": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "richcatalog": {
-                                                "is_dir": True,
-                                                "content": {}
-                                            },
-
-                                            "ussrPV": {
-                                                "is_dir": True,
-                                                "content": {
-                                                    "output1": {"is_dir": True, "content": {}},
-                                                    "output2": {"is_dir": True, "content": {}}
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "dev": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "s.dolle": {
-                                                "is_dir": True,
-                                                "content": {
-                                                    "richcatalog": {"is_dir": True, "content": {}}}
-                                                },
-                                            "s.yachaoui": {"is_dir": True, "content": {}},
-                                            "b.delayen": {"is_dir": True, "content": {}}
-                                        }
-                                    }
-                                }
-                            }
+            "user": {
+                "recocomputer": {
+                    "bestofs": {
+                        "richcatalog": {},
+                        "ussrPV": {
+                            "output1": {},
+                            "output2": {}
                         }
+                    },
+                    "dev": {
+                        "s.dolle": {
+                            "richcatalog": {}
+                        },
+                        "s.yachaoui": {},
+                        "b.delayen": {}
                     }
                 }
             }
-
+        }
         self.assertEquals(expected_cache, self.json)
 
     def test_update_directory(self):
@@ -201,72 +128,37 @@ class TestUpdateDirectory(unittest.TestCase):
                     FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                 self.json)
         expected_cache = {
-            "is_dir": True,
-            "content": {
-                    "user": {
-                        "is_dir": True,
-                        "content": {
-                            "recocomputer": {
-                                "is_dir": True,
-                                "content": {
-                                    "bestofs": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "richcatalog": {
-                                                "is_dir": True,
-                                                "content": {}
-                                            },
-                                        }
-                                    },
-                                    "dev": {
-                                        "is_dir": True,
-                                        "content": {
-                                            "s.dolle": {
-                                                "is_dir": True,
-                                                "content": {
-                                                    "richcatalog": {"is_dir": True, "content": {}}}
-                                                },
-                                            "s.yachaoui": {"is_dir": True, "content": {}},
-                                            "pe.mazare": {"is_dir": True, "content": {}}
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            "user": {
+                "recocomputer": {
+                    "bestofs": {
+                        "richcatalog": {},
+                    },
+                    "dev": {
+                        "s.dolle": {
+                            "richcatalog": {}
+                        },
+                        "s.yachaoui": {},
+                        "pe.mazare": {}
                     }
                 }
             }
+        }
         self.assertEquals(expected_cache, self.json)
 
     def test_update_empty_cache(self):
-        cache = {
-            "is_dir": True,
-            "content": {}
-        }
+        cache = {}
         update_completions.update_directory("/user/recocomputer/dev",
                  [FileStatus("/user/recocomputer/dev/s.dolle", True),
                      FileStatus("/user/recocomputer/dev/s.yachaoui", True),
                      FileStatus("/user/recocomputer/dev/pe.mazare", True)],
                  cache)
         expected_cache = {
-            "is_dir": True,
-            "content": {
-                "user": {
-                    "is_dir": True,
-                    "content": {
-                        "recocomputer": {
-                            "is_dir": True,
-                            "content": {
-                                "dev": {
-                                    "is_dir": True,
-                                    "content": {
-                                        "s.dolle": {"is_dir": True, "content": {}},
-                                        "s.yachaoui": {"is_dir": True, "content": {}},
-                                        "pe.mazare": {"is_dir": True, "content": {}}
-                                    }
-                                }
-                            }
-                        }
+            "user": {
+                "recocomputer": {
+                    "dev": {
+                        "s.dolle": {},
+                        "s.yachaoui": {},
+                        "pe.mazare": {}
                     }
                 }
             }
@@ -294,7 +186,7 @@ class TestSplitPath(unittest.TestCase):
     def test_nominal_case(self):
         self.assertEquals(["user", "s.dolle", "Music"], get_completions.split_path("/user/s.dolle/Music"))
         self.assertEquals(["user", "s.dolle", "Music"], get_completions.split_path("/user/s.dolle/Music/"))
-        
+
 class TestAppendSlash(unittest.TestCase):
     def test_nominal_case(self):
         self.assertEquals("/user/s.dolle/Music/", get_completions.append_slash("/user/s.dolle/Music", True))

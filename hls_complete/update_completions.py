@@ -9,23 +9,20 @@ import re
 def update_directory(directory, ls_results, cache):
     #find node
     for path_chunk in get_completions.split_path(directory):
-        if path_chunk not in cache["content"]:
-            cache["content"][path_chunk] = {
-                        "is_dir": True,
-                        "content": {}
-                    }
-        cache = cache["content"][path_chunk]
+        if path_chunk not in cache:
+            cache[path_chunk] = {}
+        cache = cache[path_chunk]
     basenames = [(os.path.basename(ls_result.path), ls_result.is_dir) for ls_result in ls_results]
     for basename, is_dir in basenames:
-        if basename not in cache["content"]:
-            cache["content"][basename] = {
-                        "is_dir": is_dir,
-                        "content": {}
-                    }
+        if basename not in cache:
+            if is_dir:
+                cache[basename] = {}
+            else:
+                cache[basename] = None
 
-    old_entries = set(cache["content"].keys()).difference(set([basename for basename, is_dir in basenames]))
+    old_entries = set(cache.keys()).difference(set([basename for basename, is_dir in basenames]))
     for old_entry in old_entries:
-        del cache["content"][old_entry]
+        del cache[old_entry]
 
 class FileStatus(object):
     def __init__(self, path, is_dir):
