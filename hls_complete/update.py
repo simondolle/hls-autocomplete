@@ -3,12 +3,12 @@ import json
 import sys
 import os.path
 
-import get_completions
+import complete
 import re
 
 def update_directory(directory, ls_results, cache):
     #find node
-    for path_chunk in get_completions.split_path(directory):
+    for path_chunk in complete.split_path(directory):
         if path_chunk not in cache:
             cache[path_chunk] = {}
         cache = cache[path_chunk]
@@ -58,7 +58,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    hls_cache = get_completions.load_cache()
+    hls_cache = complete.load_cache()
 
     if options.directory is None:
         print "Missing directory"
@@ -72,7 +72,7 @@ def main():
     ls_result = ls_parser.parse(options.ls_result)
 
     update_directory(options.directory, ls_result, hls_cache)
-    json.dump(hls_cache, open(get_completions.get_cache_path(), "w"), indent=4)
+    json.dump(hls_cache, open(complete.get_cache_path(), "w"), indent=4)
 
 if __name__ == "__main__":
     main()
