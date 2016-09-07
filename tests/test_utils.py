@@ -1,6 +1,6 @@
 import unittest
 
-from hls_complete import complete
+from hls_autocomplete import complete
 
 class TestSplitPath(unittest.TestCase):
     def test_nominal_case(self):

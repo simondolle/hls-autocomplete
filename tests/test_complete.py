@@ -1,5 +1,5 @@
 import unittest
-from hls_complete import complete
+from hls_autocomplete import complete
 
 class TestGetCompletions(unittest.TestCase):
 

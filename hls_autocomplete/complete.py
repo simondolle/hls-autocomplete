@@ -3,7 +3,7 @@
 import os.path
 import sys
 
-from hls_complete.utils import append_slash, split_path, load_cache
+from utils import append_slash, split_path, load_cache
 
 def get_completions(path, cache):
     dirname = os.path.dirname(path)

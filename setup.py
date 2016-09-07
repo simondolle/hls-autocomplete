@@ -20,7 +20,7 @@ test_requirements = [
 ]
 
 setup(
-    name='hls_complete',
+    name='hls_autocomplete',
     version='0.1.0',
     description='Autocomplete for "hdfs dfs -ls".',
     #long_description=readme + '\n\n' + history,
@@ -28,10 +28,10 @@ setup(
     author_email='simon.dolle@gmail.com',
     url='https://github.com/simondolle/hls-complete',
     packages=[
-        'hls_complete',
+        'hls_autocomplete',
     ],
-    package_dir={'hls_complete':
-                 'hls_complete'},
+    package_dir={'hls_autocomplete':
+                 'hls_autocomplete'},
     include_package_data=True,
     install_requires=requirements,
     license="MIT",
@@ -48,8 +48,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            '_hls_get_completions = hls_complete.get_completions:main',
-            'hls = hls_complete.hls:hls'
+            '_hls_get_completions = hls_autocomplete.get_completions:main',
+            'hls = hls_autocomplete.hls:hls'
         ]
     },
     #test_suite='tests'

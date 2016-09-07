@@ -1,6 +1,6 @@
 import unittest
 
-from hls_complete.update import FileStatus, update_directory, LsParser
+from hls_autocomplete.update import FileStatus, update_directory, LsParser
 
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
