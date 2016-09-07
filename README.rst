@@ -1,5 +1,5 @@
 ===================
-hls-complete
+hls-autocomplete
 ===================
 
 .. image:: https://travis-ci.org/simondolle/hls-complete.svg?branch=master
