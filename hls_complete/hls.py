@@ -18,7 +18,6 @@ def hls(path):
         ls_parser = hls_complete.update_completions.LsParser()
         ls_result = ls_parser.parse(hls_result)
 
-
         hls_complete.update_completions.update_directory(path, ls_result, hls_cache)
         json.dump(hls_cache, open(hls_complete.get_completions.get_cache_path(), "w"), indent=4)
 

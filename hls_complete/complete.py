@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import os.path
-import json
 import sys
 
 from hls_complete.utils import append_slash, split_path, load_cache
@@ -16,8 +15,6 @@ def get_completions(path, cache):
     if not type(cache) == type(dict()):
         return []
     result = []
-    #if "content" not in cache:
-    #    return []
     for key, value in cache.items():
         result.append((key, value is not None))
 

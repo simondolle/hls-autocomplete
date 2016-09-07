@@ -1,4 +1,5 @@
 import os.path
+import json
 
 def get_cache_path():
     cache_dir = os.path.expanduser("~")

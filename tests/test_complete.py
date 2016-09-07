@@ -1,7 +1,6 @@
 import unittest
 from hls_complete import complete
 
-
 class TestGetCompletions(unittest.TestCase):
 
     def setUp(self):
