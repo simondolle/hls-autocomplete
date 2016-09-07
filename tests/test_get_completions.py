@@ -76,69 +76,61 @@ class TestGetCompletions(unittest.TestCase):
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
         self.json = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {
-                        "richcatalog": {}
+            "Users": {
+                "simon": {
+                    "Music": {
+                        "Spotify": {}
                     },
-                    "dev": {
-                        "s.dolle": {
-                            "richcatalog": {}
-                        },
-                        "s.yachaoui": {},
-                        "b.delayen": {}
-                    }
+                    "Documents": {
+                        "work": {
+                            "CV.doc": None
+                        }
+                    },
+                    "Dropbox": {}
                 }
             }
         }
 
     def test_new_directory(self):
-        update_completions.update_directory("/user/recocomputer/bestofs/ussrPV",
-                [FileStatus("/user/recocomputer/bestofs/ussrPV/output1", True),
-                    FileStatus("/user/recocomputer/bestofs/ussrPV/output2", True)],
+        update_completions.update_directory("/Users/simon/",
+                [FileStatus("/Users/simon/Music", True),
+                 FileStatus("/Users/simon/Documents", True),
+                 FileStatus("/Users/simon/Dropbox", True),
+                 FileStatus("/Users/simon/Pictures", True)],
                 self.json)
 
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {
-                        "richcatalog": {},
-                        "ussrPV": {
-                            "output1": {},
-                            "output2": {}
+            "Users": {
+                "simon": {
+                    "Music": {
+                        "Spotify": {}
+                    },
+                    "Documents": {
+                        "work": {
+                            "CV.doc": None
                         }
                     },
-                    "dev": {
-                        "s.dolle": {
-                            "richcatalog": {}
-                        },
-                        "s.yachaoui": {},
-                        "b.delayen": {}
-                    }
+                    "Dropbox": {},
+                    "Pictures": {}
                 }
             }
         }
         self.assertEquals(expected_cache, self.json)
 
     def test_update_directory(self):
-        update_completions.update_directory("/user/recocomputer/dev",
-                [FileStatus("/user/recocomputer/dev/s.dolle", True),
-                    FileStatus("/user/recocomputer/dev/s.yachaoui", True),
-                    FileStatus("/user/recocomputer/dev/pe.mazare", True)],
+        update_completions.update_directory("/Users/simon",
+                [FileStatus("/Users/simon/Music", True),
+                    FileStatus("/Users/simon/Movies", True),
+                    FileStatus("/Users/simon/Pictures", True)],
                 self.json)
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "bestofs": {
-                        "richcatalog": {},
+            "Users": {
+                "simon": {
+                    "Music": {
+                        "Spotify": {}
                     },
-                    "dev": {
-                        "s.dolle": {
-                            "richcatalog": {}
-                        },
-                        "s.yachaoui": {},
-                        "pe.mazare": {}
-                    }
+                    "Movies": {},
+                    "Pictures": {}
                 }
             }
         }
@@ -146,19 +138,15 @@ class TestUpdateDirectory(unittest.TestCase):
 
     def test_update_empty_cache(self):
         cache = {}
-        update_completions.update_directory("/user/recocomputer/dev",
-                 [FileStatus("/user/recocomputer/dev/s.dolle", True),
-                     FileStatus("/user/recocomputer/dev/s.yachaoui", True),
-                     FileStatus("/user/recocomputer/dev/pe.mazare", True)],
+        update_completions.update_directory("/Users/simon",
+                 [FileStatus("/Users/simon/Music", True),
+                     FileStatus("/Users/simon/Movies", True)],
                  cache)
         expected_cache = {
-            "user": {
-                "recocomputer": {
-                    "dev": {
-                        "s.dolle": {},
-                        "s.yachaoui": {},
-                        "pe.mazare": {}
-                    }
+            "Users": {
+                "simon": {
+                    "Music": {},
+                    "Movies": {}
                 }
             }
         }
