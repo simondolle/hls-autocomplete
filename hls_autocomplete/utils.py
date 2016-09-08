@@ -8,10 +8,14 @@ def get_cache_path():
 
 def load_cache():
     input_file = get_cache_path()
-    if not os.path.exists(input_file):
+    try:
+        cache_content = open(input_file)
+        print "***********"
+        #print cache_content.read()
+        print "***********"
+    except:
         return {}
-    else:
-        return json.load(open(input_file))
+    return json.load(cache_content)
 
 def split_path(path):
     path_chunks = path.split("/")
