@@ -2,5 +2,5 @@
 hls-autocomplete
 ===================
 
-.. image:: https://travis-ci.org/simondolle/hls-complete.svg?branch=master
-        :target: https://travis-ci.org/simondolle/hls-complete
+.. image:: https://travis-ci.org/simondolle/hls-autocomplete.svg?branch=master
+        :target: https://travis-ci.org/simondolle/hls-autocomplete
