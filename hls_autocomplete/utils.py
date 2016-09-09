@@ -10,9 +10,6 @@ def load_cache():
     input_file = get_cache_path()
     try:
         cache_content = open(input_file)
-        print "***********"
-        #print cache_content.read()
-        print "***********"
     except:
         return {}
     return json.load(cache_content)

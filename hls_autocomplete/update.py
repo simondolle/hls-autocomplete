@@ -6,6 +6,9 @@ import os.path
 import complete
 import re
 
+from hls_autocomplete.complete import get_completions
+from hls_autocomplete.utils import get_cache_path
+
 def update_directory(directory, ls_results, cache):
     #find node
     for path_chunk in complete.split_path(directory):
@@ -51,6 +54,15 @@ class LsParser(object):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
 
+def update(path, hls_result):
+    hls_cache = get_completions.load_cache()
+
+    ls_parser = LsParser()
+    ls_result = ls_parser.parse(hls_result)
+
+    update_directory(path, ls_result, hls_cache)
+    json.dump(hls_cache, open(get_cache_path(), "w"), indent=4)
+
 def main():
     parser = OptionParser()
     parser.add_option("-d", dest="directory")
@@ -68,11 +80,7 @@ def main():
         print "Missing ls result"
         sys.exit(1)
 
-    ls_parser = LsParser()
-    ls_result = ls_parser.parse(options.ls_result)
-
-    update_directory(options.directory, ls_result, hls_cache)
-    json.dump(hls_cache, open(complete.get_cache_path(), "w"), indent=4)
+    update(options.directory, options.ls_result)
 
 if __name__ == "__main__":
     main()
