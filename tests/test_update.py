@@ -1,6 +1,6 @@
 import unittest
 
-from hls_autocomplete.update import FileStatus, update_directory, LsParser
+from hls_autocomplete.update import FileStatus, update_directory, LsParser, is_valid_path
 
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
@@ -83,6 +83,36 @@ class TestUpdateDirectory(unittest.TestCase):
             }
         }
         self.assertEquals(expected_cache, cache)
+
+    def test_update_invalid_path(self):
+        update_directory("/Users/*",
+                         [FileStatus("/Users/simon/Music", True),
+                          FileStatus("/Users/simon/Movies", True),
+                          FileStatus("/Users/simon/Pictures", True),
+                          FileStatus("/Users/simon/CV.doc", False),
+                          ],
+                         self.json)
+        expected_cache = {
+            "Users": {
+                "simon": {
+                    "Music": {
+                        "Spotify": {}
+                    },
+                    "Documents": {
+                        "work": {
+                            "CV.doc": None
+                        }
+                    },
+                    "Dropbox": {}
+                }
+            }
+        }
+        self.assertEquals(expected_cache, self.json)
+
+    def test_is_valid_path(self):
+        self.assertTrue(is_valid_path("/Users/simon"))
+        self.assertTrue(is_valid_path("/Users/simon/"))
+        self.assertFalse(is_valid_path("/Users/simon/*/Music"))
 
 class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):

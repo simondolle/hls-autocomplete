@@ -6,10 +6,11 @@ import os.path
 import complete
 import re
 
-from hls_autocomplete.complete import get_completions
 from hls_autocomplete.utils import get_cache_path, load_cache
 
 def update_directory(directory, ls_results, cache):
+    if not is_valid_path(directory):
+        return
     #find node
     for path_chunk in complete.split_path(directory):
         if path_chunk not in cache:
@@ -56,6 +57,9 @@ class LsParser(object):
     def parse(self, output):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
+
+def is_valid_path(path):
+    return "*" not in path
 
 def update(path, hls_result):
     hls_cache = load_cache()
