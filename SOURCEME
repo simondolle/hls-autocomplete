@@ -2,4 +2,4 @@ HLS_AUTOCOMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 alias hls="python $HLS_AUTOCOMPLETE_DIR/hls_autocomplete/hls.py"
 
-source $HLS_COMPLETE_DIR/hlscomplete_autocomplete.sh
+source $HLS_AUTOCOMPLETE_DIR/hlscomplete_autocomplete.sh
