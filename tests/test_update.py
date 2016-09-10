@@ -102,9 +102,8 @@ class TestLsParser(unittest.TestCase):
 
     def test_invalid_lines(self):
         parser = LsParser()
-        self.assertIsNone(parser.parse_line("8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"))
-        self.assertIsNone(parser.parse_line("drwx------+  8 simon  staff  272 27 dec  2015"))
-
+        self.assertEquals(None, parser.parse_line("8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"))
+        self.assertEquals(None, parser.parse_line("drwx------+  8 simon  staff  272 27 dec  2015"))
 
     def test_parse(self):
         parser = LsParser()
