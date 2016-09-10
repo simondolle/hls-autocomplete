@@ -3,8 +3,8 @@ _script()
   local cur
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
-  HLS_COMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-  COMMAND=$(python $HLS_COMPLETE_DIR/hls_complete/get_completions.py $cur)
+  HLS_AUTOCOMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  COMMAND=$(python $HLS_AUTOCOMPLETE_DIR/hls_autocomplete/complete.py $cur)
   _script_commands=$COMMAND
   if [[ $_script_commands == "" ]]; then
     hls $cur &> /dev/null

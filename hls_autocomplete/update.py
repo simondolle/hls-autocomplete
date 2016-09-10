@@ -7,7 +7,7 @@ import complete
 import re
 
 from hls_autocomplete.complete import get_completions
-from hls_autocomplete.utils import get_cache_path
+from hls_autocomplete.utils import get_cache_path, load_cache
 
 def update_directory(directory, ls_results, cache):
     #find node
@@ -58,7 +58,7 @@ class LsParser(object):
         return [p for p in result if p is not None]
 
 def update(path, hls_result):
-    hls_cache = get_completions.load_cache()
+    hls_cache = load_cache()
 
     ls_parser = LsParser()
     ls_result = ls_parser.parse(hls_result)
