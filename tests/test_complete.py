@@ -33,6 +33,12 @@ class TestGetCompletions(unittest.TestCase):
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
+    def test_directory_case(self):
+        actual_result = complete.get_completions(
+                "/Users/simon/", self.json)
+        expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
+        self.assertEquals(expected_result, actual_result)
+
     def test_unexisting_directory(self):
         actual_result = complete.get_completions(
                 "/Users/toto/t", self.json)

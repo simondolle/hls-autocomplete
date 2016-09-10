@@ -6,7 +6,10 @@ import sys
 from utils import append_slash, split_path, load_cache
 
 def get_completions(path, cache):
-    dirname = os.path.dirname(path)
+    if path.endswith("/"):
+        dirname = path[:-1]
+    else:
+        dirname = os.path.dirname(path)
     path_chunks = split_path(dirname)
     for path_chunk in path_chunks:
         if path_chunk not in cache:
