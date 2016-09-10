@@ -33,7 +33,7 @@ def main():
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         completions = get_completions(input_path, hls_cache)
-        completions = ["'%s'"%s for s in completions]
+        completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")
 
