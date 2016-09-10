@@ -8,6 +8,7 @@ class TestSplitPath(unittest.TestCase):
     def test_nominal_case(self):
         self.assertEquals(["user", "s.dolle", "Music"], complete.split_path("/user/s.dolle/Music"))
         self.assertEquals(["user", "s.dolle", "Music"], complete.split_path("/user/s.dolle/Music/"))
+        self.assertEquals(["user", "s.dolle", "Music"], complete.split_path("/user/s.dolle/Music//"))
 
 class TestAppendSlash(unittest.TestCase):
     def test_nominal_case(self):

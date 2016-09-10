@@ -45,6 +45,12 @@ class TestGetCompletions(unittest.TestCase):
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
+    def test_double_slash(self):
+        actual_result = complete.get_completions(
+            "/Users/simon//", self.json)
+        expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
+        self.assertEquals(expected_result, actual_result)
+
     def test_root_only(self):
         actual_result = complete.get_completions(
                 "/", self.json)
