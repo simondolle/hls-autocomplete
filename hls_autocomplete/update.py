@@ -9,8 +9,9 @@ import re
 from hls_autocomplete.utils import get_cache_path, load_cache
 
 def update_directory(directory, ls_results, cache):
+    result  = cache
     if not is_valid_path(directory):
-        return
+        return result
     #find node
     for path_chunk in complete.split_path(directory):
         if path_chunk not in cache:
@@ -27,6 +28,7 @@ def update_directory(directory, ls_results, cache):
     old_entries = set(cache.keys()).difference(set([basename for basename, is_dir in basenames]))
     for old_entry in old_entries:
         del cache[old_entry]
+    return result
 
 class FileStatus(object):
     def __init__(self, path, is_dir):
@@ -67,7 +69,7 @@ def update(path, hls_result):
     ls_parser = LsParser()
     ls_result = ls_parser.parse(hls_result)
 
-    update_directory(path, ls_result, hls_cache)
+    hls_cache = update_directory(path, ls_result, hls_cache)
     json.dump(hls_cache, open(get_cache_path(), "w"), indent=4)
 
 def main():

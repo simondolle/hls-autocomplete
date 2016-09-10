@@ -21,7 +21,7 @@ class TestUpdateDirectory(unittest.TestCase):
         }
 
     def test_new_directory(self):
-        update_directory("/Users/simon/",
+        cache = update_directory("/Users/simon/",
                 [FileStatus("/Users/simon/Music", True),
                  FileStatus("/Users/simon/Documents", True),
                  FileStatus("/Users/simon/Dropbox", True),
@@ -44,11 +44,11 @@ class TestUpdateDirectory(unittest.TestCase):
                 }
             }
         }
-        self.assertEquals(expected_cache, self.json)
+        self.assertEquals(expected_cache, cache)
 
     def test_update_directory(self):
-        update_directory("/Users/simon",
-                [FileStatus("/Users/simon/Music", True),
+        cache = update_directory("/Users/simon",
+                    [FileStatus("/Users/simon/Music", True),
                     FileStatus("/Users/simon/Movies", True),
                     FileStatus("/Users/simon/Pictures", True),
                     FileStatus("/Users/simon/CV.doc", False),
@@ -66,7 +66,7 @@ class TestUpdateDirectory(unittest.TestCase):
                 }
             }
         }
-        self.assertEquals(expected_cache, self.json)
+        self.assertEquals(expected_cache, cache)
 
     def test_update_empty_cache(self):
         cache = {}
@@ -85,7 +85,7 @@ class TestUpdateDirectory(unittest.TestCase):
         self.assertEquals(expected_cache, cache)
 
     def test_update_invalid_path(self):
-        update_directory("/Users/*",
+        cache = update_directory("/Users/*",
                          [FileStatus("/Users/simon/Music", True),
                           FileStatus("/Users/simon/Movies", True),
                           FileStatus("/Users/simon/Pictures", True),
@@ -107,7 +107,7 @@ class TestUpdateDirectory(unittest.TestCase):
                 }
             }
         }
-        self.assertEquals(expected_cache, self.json)
+        self.assertEquals(expected_cache, cache)
 
     def test_is_valid_path(self):
         self.assertTrue(is_valid_path("/Users/simon"))
