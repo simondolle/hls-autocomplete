@@ -3,17 +3,16 @@ import json
 import sys
 import os.path
 
-import complete
 import re
 
-from hls_autocomplete.utils import get_cache_path, load_cache
+from hls_autocomplete.utils import get_cache_path, load_cache, split_path
 
 def update_directory(directory, ls_results, cache):
     result  = cache
     if not is_valid_path(directory):
         return result
     #find node
-    for path_chunk in complete.split_path(directory):
+    for path_chunk in split_path(directory):
         if path_chunk not in cache:
             cache[path_chunk] = {}
         cache = cache[path_chunk]
