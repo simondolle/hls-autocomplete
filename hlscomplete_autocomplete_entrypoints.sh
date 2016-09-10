@@ -9,7 +9,7 @@ _script()
     hls $cur &> /dev/null
     _script_commands=$COMMAND
   fi
-  COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
+  COMPREPLY=( ${_script_commands} )
   return 0
 }
 complete -o nospace -F _script hls

@@ -34,7 +34,7 @@ def main():
         input_path = sys.argv[1].decode("utf-8")
         completions = get_completions(input_path, hls_cache)
         completions = ["'%s'"%s for s in completions]
-        result = " ".join(completions)
+        result = "\n".join(completions)
         print result.encode("utf-8")
 
 if __name__ == "__main__":
