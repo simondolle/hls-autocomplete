@@ -35,6 +35,9 @@ class FileStatus(object):
     def __eq__(self, other):
         return self.path == other.path and self.is_dir == other.is_dir
 
+    def __str__(self):
+        return str((self.path, self.is_dir))
+
 class LsParser(object):
     def __init__(self):
         pass
@@ -69,8 +72,6 @@ def main():
     parser.add_option("-l", dest="ls_result")
 
     (options, args) = parser.parse_args()
-
-    hls_cache = complete.load_cache()
 
     if options.directory is None:
         print "Missing directory"
