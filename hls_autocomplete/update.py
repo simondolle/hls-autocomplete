@@ -71,23 +71,3 @@ def update(path, hls_result):
     hls_cache = update_directory(path, ls_result, hls_cache)
     json.dump(hls_cache, open(get_cache_path(), "w"), indent=4)
     return hls_cache
-
-def main():
-    parser = OptionParser()
-    parser.add_option("-d", dest="directory")
-    parser.add_option("-l", dest="ls_result")
-
-    (options, args) = parser.parse_args()
-
-    if options.directory is None:
-        print "Missing directory"
-        sys.exit(1)
-
-    if options.ls_result is None:
-        print "Missing ls result"
-        sys.exit(1)
-
-    update(options.directory, options.ls_result)
-
-if __name__ == "__main__":
-    main()
