@@ -6,10 +6,6 @@ _script()
   HLS_AUTOCOMPLETE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   COMMAND=$(python $HLS_AUTOCOMPLETE_DIR/hls_autocomplete/complete.py $cur)
   _script_commands=$COMMAND
-  if [[ $_script_commands == "" ]]; then
-    hls $cur &> /dev/null
-    _script_commands=$COMMAND
-  fi
   COMPREPLY=( ${_script_commands} )
   return 0
 }

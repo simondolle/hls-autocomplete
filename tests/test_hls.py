@@ -20,12 +20,15 @@ class TestHlsWithUpdate(unittest.TestCase):
     @mock.patch("hls_autocomplete.hls.hls")
     def test_nominal_case(self, hls_mock, update_mock):
         hls_mock.return_value = (0, "/User/simon/Music")
-        self.assertEqual("/User/simon/Music", hls_with_update("/User/simon"))
+        update_mock.return_value = {}
+        self.assertEqual(("/User/simon/Music", {}), hls_with_update("/User/simon"))
         update_mock.assert_called_once_with("/User/simon", "/User/simon/Music")
 
+    @mock.patch("hls_autocomplete.hls.load_cache")
     @mock.patch("hls_autocomplete.hls.update")
     @mock.patch("hls_autocomplete.hls.hls")
-    def test_error_case(self, hls_mock, update_mock):
+    def test_error_case(self, hls_mock, update_mock, load_cache_mock):
         hls_mock.return_value = (1, "Error")
-        self.assertEqual("Error", hls_with_update("/User/simon"))
+        load_cache_mock.return_value = {}
+        self.assertEqual(("Error", {}), hls_with_update("/User/simon"))
         update_mock.assert_not_called()

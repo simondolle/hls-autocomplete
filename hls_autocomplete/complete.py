@@ -4,12 +4,17 @@ import os.path
 import sys
 
 from utils import append_slash, split_path, load_cache
+from hls import hls_with_update
+
+def get_path_to_complete(path):
+    if path.endswith("/"):
+        result = path[:-1]
+    else:
+        result = os.path.dirname(path)
+    return result
 
 def get_completions(path, cache):
-    if path.endswith("/"):
-        dirname = path[:-1]
-    else:
-        dirname = os.path.dirname(path)
+    dirname = get_path_to_complete(path)
     path_chunks = split_path(dirname)
     for path_chunk in path_chunks:
         if path_chunk not in cache:
@@ -31,11 +36,18 @@ def get_completions(path, cache):
     result = [os.path.join(dirname, r) for r in result]
     return sorted(result)
 
+def get_completions_with_update(path, cache):
+    completions = get_completions(path, cache)
+    if len(completions) == 0:
+        _, cache = hls_with_update(get_path_to_complete(path))
+        completions = get_completions(path, cache)
+    return completions
+
 def main():
     hls_cache = load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
-        completions = get_completions(input_path, hls_cache)
+        completions = get_completions_with_update(input_path, hls_cache)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")

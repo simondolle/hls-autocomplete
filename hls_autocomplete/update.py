@@ -70,6 +70,7 @@ def update(path, hls_result):
 
     hls_cache = update_directory(path, ls_result, hls_cache)
     json.dump(hls_cache, open(get_cache_path(), "w"), indent=4)
+    return hls_cache
 
 def main():
     parser = OptionParser()
