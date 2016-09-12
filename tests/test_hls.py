@@ -2,7 +2,7 @@ import unittest
 import mock
 import subprocess
 
-from hls_autocomplete.hls import HlsHdfs
+from hls_autocomplete.hls import HlsHdfs, CacheHls
 
 class TestHls(unittest.TestCase):
     @mock.patch("hls_autocomplete.hls.subprocess.Popen")
@@ -19,16 +19,16 @@ class TestHls(unittest.TestCase):
 class TestHlsWithUpdate(unittest.TestCase):
     @mock.patch("hls_autocomplete.hls.update")
     def test_nominal_case(self, update_mock):
-        lister = HlsHdfs()
-        lister.hls = mock.MagicMock()
-        lister.hls.return_value = (0, "/User/simon/Music")
-        self.assertEqual("/User/simon/Music", lister.hls_with_update("/User/simon"))
+        lister_mock = mock.MagicMock()
+        lister_mock.hls.return_value = (0, "/User/simon/Music")
+        lister = CacheHls(lister_mock)
+        self.assertEqual("/User/simon/Music", lister.list_status("/User/simon"))
         update_mock.assert_called_once_with("/User/simon", "/User/simon/Music")
 
     @mock.patch("hls_autocomplete.hls.update")
     def test_error_case(self, update_mock):
-        lister = HlsHdfs()
-        lister.hls = mock.MagicMock()
-        lister.hls.return_value = (1, "Error")
-        self.assertEqual("Error", lister.hls_with_update("/User/simon"))
+        lister_mock = mock.MagicMock()
+        lister_mock.hls.return_value = (1, "Error")
+        lister = CacheHls(lister_mock)
+        self.assertEqual("Error", lister.list_status("/User/simon"))
         update_mock.assert_not_called()

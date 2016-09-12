@@ -6,18 +6,22 @@ import os.path
 
 from hls_autocomplete.update import update
 
+class CacheHls(object):
+    def __init__(self, lister):
+        self.lister = lister
+
+    def list_status(self, path):
+        hls_return_code, hls_result = self.lister.hls(path)
+        if hls_return_code == 0:
+            update(path, hls_result)
+        return hls_result
+
 class HlsSubprocess(object):
     def __init__(self):
         pass
 
     def list_status(self, path):
-        return self.hls_with_update(self, path)
-
-    def hls_with_update(self, path):
-        hls_return_code, hls_result = self.hls(path)
-        if hls_return_code == 0:
-            update(path, hls_result)
-        return hls_result
+        return self.hls(path)
 
     def hls(self, path):
         p = self.get_process(path)
@@ -46,6 +50,7 @@ class HlsLs(HlsSubprocess):
 def main():
     if len(sys.argv) > 1:
         lister = HlsHdfs()
+        lister = CacheHls(lister)
         hls_result, cache = lister.list_status(sys.argv[1])
         print(hls_result, end="")
 

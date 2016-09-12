@@ -5,7 +5,7 @@ import sys
 import json
 
 from utils import append_slash, split_path
-from hls import HlsHdfs
+from hls import HlsHdfs, CacheHls
 
 def get_path_to_complete(path):
     if path.endswith("/"):
@@ -68,6 +68,7 @@ def main():
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsHdfs()
+        lister = CacheHls(lister)
         completions = completer.get_completions_with_update(input_path, hls_cache, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
