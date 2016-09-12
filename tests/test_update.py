@@ -1,6 +1,7 @@
 import unittest
 
-from hls_autocomplete.update import FileStatus, update_directory, LsParser, is_valid_path
+from hls_autocomplete.complete import Cache
+from hls_autocomplete.update import FileStatus, LsParser
 
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
@@ -19,14 +20,14 @@ class TestUpdateDirectory(unittest.TestCase):
                 }
             }
         }
+        self.cache = Cache(self.json)
 
     def test_new_directory(self):
-        cache = update_directory("/Users/simon/",
+        cache = self.cache.update_directory("/Users/simon/",
                 [FileStatus("/Users/simon/Music", True),
                  FileStatus("/Users/simon/Documents", True),
                  FileStatus("/Users/simon/Dropbox", True),
-                 FileStatus("/Users/simon/Pictures", True)],
-                self.json)
+                 FileStatus("/Users/simon/Pictures", True)])
 
         expected_cache = {
             "Users": {
@@ -47,13 +48,12 @@ class TestUpdateDirectory(unittest.TestCase):
         self.assertEquals(expected_cache, cache)
 
     def test_update_directory(self):
-        cache = update_directory("/Users/simon",
+        cache = self.cache.update_directory("/Users/simon",
                     [FileStatus("/Users/simon/Music", True),
                     FileStatus("/Users/simon/Movies", True),
                     FileStatus("/Users/simon/Pictures", True),
                     FileStatus("/Users/simon/CV.doc", False),
-                 ],
-                self.json)
+                 ])
         expected_cache = {
             "Users": {
                 "simon": {
@@ -69,11 +69,10 @@ class TestUpdateDirectory(unittest.TestCase):
         self.assertEquals(expected_cache, cache)
 
     def test_update_empty_cache(self):
-        cache = {}
-        update_directory("/Users/simon",
+        cache = Cache({})
+        cache = cache.update_directory("/Users/simon",
                  [FileStatus("/Users/simon/Music", True),
-                     FileStatus("/Users/simon/Movies", True)],
-                 cache)
+                     FileStatus("/Users/simon/Movies", True)])
         expected_cache = {
             "Users": {
                 "simon": {
@@ -85,13 +84,12 @@ class TestUpdateDirectory(unittest.TestCase):
         self.assertEquals(expected_cache, cache)
 
     def test_update_invalid_path(self):
-        cache = update_directory("/Users/*",
+        cache = self.cache.update_directory("/Users/*",
                          [FileStatus("/Users/simon/Music", True),
                           FileStatus("/Users/simon/Movies", True),
                           FileStatus("/Users/simon/Pictures", True),
                           FileStatus("/Users/simon/CV.doc", False),
-                          ],
-                         self.json)
+                          ])
         expected_cache = {
             "Users": {
                 "simon": {
@@ -108,11 +106,6 @@ class TestUpdateDirectory(unittest.TestCase):
             }
         }
         self.assertEquals(expected_cache, cache)
-
-    def test_is_valid_path(self):
-        self.assertTrue(is_valid_path("/Users/simon"))
-        self.assertTrue(is_valid_path("/Users/simon/"))
-        self.assertFalse(is_valid_path("/Users/simon/*/Music"))
 
 class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):

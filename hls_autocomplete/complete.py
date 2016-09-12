@@ -15,6 +15,9 @@ def get_path_to_complete(path):
     return result
 
 
+def is_valid_path(path):
+    return "*" not in path
+
 class Cache(object):
     def __init__(self, json):
         self.json = json
@@ -42,6 +45,28 @@ class Cache(object):
         result = [append_slash(r[0], r[1]) for r in result]
         result = [os.path.join(dirname, r) for r in result]
         return sorted(result)
+
+    def update_directory(self, directory, ls_results):
+        result = self.json
+        if not is_valid_path(directory):
+            return result
+        cache = self.json
+        for path_chunk in split_path(directory):
+            if path_chunk not in cache:
+                cache[path_chunk] = {}
+            cache = cache[path_chunk]
+        basenames = [(os.path.basename(ls_result.path), ls_result.is_dir) for ls_result in ls_results]
+        for basename, is_dir in basenames:
+            if basename not in cache:
+                if is_dir:
+                    cache[basename] = {}
+                else:
+                    cache[basename] = None
+
+        old_entries = set(cache.keys()).difference(set([basename for basename, is_dir in basenames]))
+        for old_entry in old_entries:
+            del cache[old_entry]
+        return result
 
 class CacheCompleter(object):
     def __init__(self):
