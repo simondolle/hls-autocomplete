@@ -2,11 +2,12 @@ from __future__ import print_function
 
 import sys
 import subprocess
+import os.path
 
 from hls_autocomplete.update import update
 from hls_autocomplete.utils import load_cache
 
-class HlsHdfs(object):
+class HlsSubprocess(object):
     def __init__(self):
         pass
 
@@ -22,11 +23,28 @@ class HlsHdfs(object):
         return hls_result, cache
 
     def hls(self, path):
-        p = subprocess.Popen(["hdfs", "dfs", "-ls", path], stdout=subprocess.PIPE)
+        p = self.get_process(path)
         hls_result = p.communicate()[0]
         hls_result = hls_result.decode("utf-8")
         hls_return_code = p.returncode
         return hls_return_code, hls_result
+
+    def get_process(self, path):
+        return None
+
+class HlsHdfs(HlsSubprocess):
+    def __init__(self):
+        pass
+
+    def get_process(self, path):
+        return subprocess.Popen(["hdfs", "dfs", "-ls", path], stdout=subprocess.PIPE)
+
+class HlsLs(HlsSubprocess):
+    def __init__(self):
+        pass
+
+    def get_process(self, path):
+        return subprocess.Popen("ls -ls %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
 
 def main():
     if len(sys.argv) > 1:
