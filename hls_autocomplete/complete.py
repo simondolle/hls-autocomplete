@@ -4,7 +4,7 @@ import os.path
 import sys
 
 from utils import append_slash, split_path, load_cache
-from hls import hls_with_update
+from hls import HlsHdfs
 
 def get_path_to_complete(path):
     if path.endswith("/"):
@@ -36,10 +36,10 @@ def get_completions(path, cache):
     result = [os.path.join(dirname, r) for r in result]
     return sorted(result)
 
-def get_completions_with_update(path, cache):
+def get_completions_with_update(path, cache, lister):
     completions = get_completions(path, cache)
     if len(completions) == 0:
-        _, cache = hls_with_update(get_path_to_complete(path))
+        _, cache = lister.hls_with_update(get_path_to_complete(path))
         completions = get_completions(path, cache)
     return completions
 
@@ -47,7 +47,8 @@ def main():
     hls_cache = load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
-        completions = get_completions_with_update(input_path, hls_cache)
+        lister = HlsHdfs()
+        completions = get_completions_with_update(input_path, hls_cache, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")
