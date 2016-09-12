@@ -17,9 +17,6 @@ class CacheHls(object):
         return hls_result
 
 class HlsSubprocess(object):
-    def __init__(self):
-        pass
-
     def list_status(self, path):
         return self.hls(path)
 
@@ -34,16 +31,10 @@ class HlsSubprocess(object):
         return None
 
 class HlsHdfs(HlsSubprocess):
-    def __init__(self):
-        pass
-
     def get_process(self, path):
         return subprocess.Popen(["hdfs", "dfs", "-ls", path], stdout=subprocess.PIPE)
 
 class HlsLs(HlsSubprocess):
-    def __init__(self):
-        pass
-
     def get_process(self, path):
         return subprocess.Popen("ls -ls %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
 
