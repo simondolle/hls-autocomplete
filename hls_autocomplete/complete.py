@@ -14,21 +14,23 @@ def get_path_to_complete(path):
         result = os.path.dirname(path)
     return result
 
-class CacheCompleter(object):
-    def __init__(self):
-        pass
 
-    def get_completions(self, path, cache):
+class Cache(object):
+    def __init__(self, json):
+        self.json = json
+
+    def get_completions(self, path):
+        json = self.json
         dirname = get_path_to_complete(path)
         path_chunks = split_path(dirname)
         for path_chunk in path_chunks:
-            if path_chunk not in cache:
+            if path_chunk not in json:
                 return []
-            cache = cache[path_chunk]
-        if not type(cache) == type(dict()):
+            json = json[path_chunk]
+        if not type(json) == type(dict()):
             return []
         result = []
-        for key, value in cache.items():
+        for key, value in json.items():
             result.append((key, value is not None))
 
         if not path.endswith("/"):
@@ -40,6 +42,13 @@ class CacheCompleter(object):
         result = [append_slash(r[0], r[1]) for r in result]
         result = [os.path.join(dirname, r) for r in result]
         return sorted(result)
+
+class CacheCompleter(object):
+    def __init__(self):
+        pass
+
+    def get_completions(self, path, cache):
+        return Cache(cache).get_completions(path)
 
     def get_completions_with_update(self, path, cache, lister):
         completions = self.get_completions(path, cache)
