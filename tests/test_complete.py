@@ -126,8 +126,13 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
                 }
             }
         }
+
+        load_cache_mock = mock.MagicMock()
+        load_cache_mock.return_value = updated_cache
+        self.completer.load_cache = load_cache_mock
+
         lister_mock = mock.MagicMock()
-        lister_mock.hls_with_update.return_value = (None, updated_cache)
+        lister_mock.hls_with_update.return_value = None
         self.assertEquals(["/Users/simon/Documents/", "/Users/simon/Dropbox/"],
                           self.completer.get_completions_with_update(path, cache, lister_mock))
 
@@ -136,3 +141,18 @@ class TestGetPathToComplete(unittest.TestCase):
     def test_nominal_case(self):
         self.assertEquals("/Users/simon", get_path_to_complete("/Users/simon/M"))
         self.assertEquals("/Users/simon", get_path_to_complete("/Users/simon/"))
+
+class TestLoadCache(unittest.TestCase):
+    def test_nominal_case(self):
+        completer = CacheCompleter()
+        completer.get_cache_path = mock.MagicMock().return_value = "/tmp/file"
+
+        m = mock.mock_open(read_data='{"foo":{}}')
+        with mock.patch("hls_autocomplete.utils.open", m, create=True):
+            self.assertEqual({"foo": {}}, completer.load_cache())
+
+    def test_nominal_case(self):
+        completer = CacheCompleter()
+        completer.get_cache_path = mock.MagicMock()
+        completer.get_cache_path.return_value = "/tmp/unexisting_file"
+        self.assertEqual({}, completer.load_cache())

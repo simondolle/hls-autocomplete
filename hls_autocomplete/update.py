@@ -5,7 +5,7 @@ import os.path
 
 import re
 
-from hls_autocomplete.utils import get_cache_path, load_cache, split_path
+from hls_autocomplete.utils import split_path
 
 def update_directory(directory, ls_results, cache):
     result  = cache

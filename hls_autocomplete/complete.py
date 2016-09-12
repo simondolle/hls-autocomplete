@@ -2,8 +2,9 @@
 
 import os.path
 import sys
+import json
 
-from utils import append_slash, split_path, load_cache
+from utils import append_slash, split_path
 from hls import HlsHdfs
 
 def get_path_to_complete(path):
@@ -43,16 +44,30 @@ class CacheCompleter(object):
     def get_completions_with_update(self, path, cache, lister):
         completions = self.get_completions(path, cache)
         if len(completions) == 0:
-            _, cache = lister.hls_with_update(get_path_to_complete(path))
+            lister.hls_with_update(get_path_to_complete(path))
+            cache = self.load_cache()
             completions = self.get_completions(path, cache)
         return completions
 
+    def get_cache_path(self):
+        cache_dir = os.path.expanduser("~")
+        input_file = os.path.join(cache_dir, ".hls_cache.json")
+        return input_file
+
+    def load_cache(self):
+        input_file = self.get_cache_path()
+        try:
+            cache_content = open(input_file)
+        except:
+            return {}
+        return json.load(cache_content)
+
 def main():
-    hls_cache = load_cache()
+    completer = CacheCompleter()
+    hls_cache = completer.load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsHdfs()
-        completer = CacheCompleter()
         completions = completer.get_completions_with_update(input_path, hls_cache, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)

@@ -5,22 +5,19 @@ import subprocess
 import os.path
 
 from hls_autocomplete.update import update
-from hls_autocomplete.utils import load_cache
 
 class HlsSubprocess(object):
     def __init__(self):
         pass
 
     def list_status(self, path):
-        return self.hls_with_update(self)
+        return self.hls_with_update(self, path)
 
     def hls_with_update(self, path):
         hls_return_code, hls_result = self.hls(path)
         if hls_return_code == 0:
-            cache = update(path, hls_result)
-        else:
-            cache = load_cache()
-        return hls_result, cache
+            update(path, hls_result)
+        return hls_result
 
     def hls(self, path):
         p = self.get_process(path)

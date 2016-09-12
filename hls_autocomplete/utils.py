@@ -1,18 +1,7 @@
 import os.path
 import json
 
-def get_cache_path():
-    cache_dir = os.path.expanduser("~")
-    input_file = os.path.join(cache_dir, ".hls_cache.json")
-    return input_file
 
-def load_cache():
-    input_file = get_cache_path()
-    try:
-        cache_content = open(input_file)
-    except:
-        return {}
-    return json.load(cache_content)
 
 def split_path(path):
     path_chunks = path.split("/")

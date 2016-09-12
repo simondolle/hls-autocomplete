@@ -19,19 +19,16 @@ class TestHls(unittest.TestCase):
 class TestHlsWithUpdate(unittest.TestCase):
     @mock.patch("hls_autocomplete.hls.update")
     def test_nominal_case(self, update_mock):
-        update_mock.return_value = {}
         lister = HlsHdfs()
         lister.hls = mock.MagicMock()
         lister.hls.return_value = (0, "/User/simon/Music")
-        self.assertEqual(("/User/simon/Music", {}), lister.hls_with_update("/User/simon"))
+        self.assertEqual("/User/simon/Music", lister.hls_with_update("/User/simon"))
         update_mock.assert_called_once_with("/User/simon", "/User/simon/Music")
 
-    @mock.patch("hls_autocomplete.hls.load_cache")
     @mock.patch("hls_autocomplete.hls.update")
-    def test_error_case(self, update_mock, load_cache_mock):
-        load_cache_mock.return_value = {}
+    def test_error_case(self, update_mock):
         lister = HlsHdfs()
         lister.hls = mock.MagicMock()
         lister.hls.return_value = (1, "Error")
-        self.assertEqual(("Error", {}), lister.hls_with_update("/User/simon"))
+        self.assertEqual("Error", lister.hls_with_update("/User/simon"))
         update_mock.assert_not_called()
