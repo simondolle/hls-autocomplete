@@ -68,6 +68,21 @@ class Cache(object):
             del cache[old_entry]
         return result
 
+    @classmethod
+    def get_cache_path(c):
+        cache_dir = os.path.expanduser("~")
+        input_file = os.path.join(cache_dir, ".hls_cache.json")
+        return input_file
+
+    @classmethod
+    def load_cache(c):
+        input_file = Cache.get_cache_path()
+        try:
+            cache_content = open(input_file)
+        except:
+            return {}
+        return json.load(cache_content)
+
 class CacheCompleter(object):
     def __init__(self):
         pass
@@ -83,18 +98,6 @@ class CacheCompleter(object):
             completions = self.get_completions(path, cache)
         return completions
 
-    def get_cache_path(self):
-        cache_dir = os.path.expanduser("~")
-        input_file = os.path.join(cache_dir, ".hls_cache.json")
-        return input_file
-
-    def load_cache(self):
-        input_file = self.get_cache_path()
-        try:
-            cache_content = open(input_file)
-        except:
-            return {}
-        return json.load(cache_content)
 
 def main():
     completer = CacheCompleter()
@@ -102,7 +105,7 @@ def main():
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsHdfs()
-        lister = CacheHls(lister)
+        lister = CacheHls(lister, Cache.load_cache())
         completions = completer.get_completions_with_update(input_path, hls_cache, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)

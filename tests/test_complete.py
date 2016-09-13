@@ -1,7 +1,7 @@
 import unittest
 import mock
 
-from hls_autocomplete.complete import CacheCompleter, get_path_to_complete, is_valid_path
+from hls_autocomplete.complete import CacheCompleter, get_path_to_complete, is_valid_path, Cache
 
 class TestGetCompletions(unittest.TestCase):
 
@@ -144,18 +144,19 @@ class TestGetPathToComplete(unittest.TestCase):
 
 class TestLoadCache(unittest.TestCase):
     def test_nominal_case(self):
-        completer = CacheCompleter()
-        completer.get_cache_path = mock.MagicMock().return_value = "/tmp/file"
+        get_cache_path_mock = mock.MagicMock()
+        get_cache_path_mock.return_value = "/tmp/file"
+        Cache.get_cache_path = get_cache_path_mock
 
         m = mock.mock_open(read_data='{"foo":{}}')
-        with mock.patch("hls_autocomplete.utils.open", m, create=True):
-            self.assertEqual({"foo": {}}, completer.load_cache())
+        with mock.patch("hls_autocomplete.complete.open", m, create=True):
+            self.assertEqual({"foo": {}}, Cache.load_cache())
 
     def test_nominal_case(self):
         completer = CacheCompleter()
         completer.get_cache_path = mock.MagicMock()
         completer.get_cache_path.return_value = "/tmp/unexisting_file"
-        self.assertEqual({}, completer.load_cache())
+        self.assertEqual({}, Cache.load_cache())
 
 class TestIsValidPath(unittest.TestCase):
     def test_is_valid_path(self):

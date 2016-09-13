@@ -3,18 +3,30 @@ from __future__ import print_function
 import sys
 import subprocess
 import os.path
+import json
 
-from hls_autocomplete.update import update
+from hls_autocomplete.update import update, LsParser
 
 class CacheHls(object):
-    def __init__(self, lister):
+    def __init__(self, lister, cache):
         self.lister = lister
+        self.cache = cache
 
     def list_status(self, path):
         hls_return_code, hls_result = self.lister.hls(path)
         if hls_return_code == 0:
-            update(path, hls_result)
+            print ("update")
+            self.update_cache(path, hls_result)
         return hls_result
+
+    def update_cache(self, path, hls_result):
+
+        ls_parser = LsParser()
+        ls_result = ls_parser.parse(hls_result)
+
+        self.cache = self.cache.update_directory(path, ls_result)
+        return self.cache
+
 
 class HlsSubprocess(object):
     def list_status(self, path):

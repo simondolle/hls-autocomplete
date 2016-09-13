@@ -35,8 +35,6 @@ class LsParser(object):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
 
-
-
 def update(path, hls_result):
     hls_cache = load_cache()
 
