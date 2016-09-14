@@ -5,7 +5,7 @@ import sys
 import json
 
 from utils import append_slash, split_path
-from hls import HlsHdfs, HlsLs, CacheHls
+from hls import HlsLs, CacheHls
 
 def get_path_to_complete(path):
     if path.endswith("/"):
@@ -85,33 +85,38 @@ class Cache(object):
             return {}
         return json.load(cache_content)
 
+    def save(self):
+        json.dump(self.json, open(Cache.get_cache_path(), "w"), indent=4, sort_keys=True)
+
 class CacheCompleter(object):
     def __init__(self):
         pass
 
     def get_completions(self, path, cache):
-        return Cache(cache).get_completions(path)
+        return cache.get_completions(path)
 
     def get_completions_with_update(self, path, cache, lister):
         completions = self.get_completions(path, cache)
         if len(completions) == 0:
             lister.list_status(get_path_to_complete(path))
-            cache = Cache.load_cache()
-            completions = self.get_completions(path, cache.json)
+            cache = Cache(Cache.load_cache())
+            completions = self.get_completions(path, cache)
         return completions
 
 
 def main():
     completer = CacheCompleter()
-    hls_cache = Cache.load_cache()
+    hls_cache = Cache(Cache.load_cache())
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
-        lister = HlsHdfs()
-        lister = CacheHls(lister, Cache.load_cache())
+        lister = HlsLs()
+        lister = CacheHls(lister, hls_cache)
         completions = completer.get_completions_with_update(input_path, hls_cache, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")
+        hls_cache.save()
+
 
 if __name__ == "__main__":
     main()

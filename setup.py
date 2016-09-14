@@ -49,7 +49,7 @@ setup(
     entry_points={
         'console_scripts': [
             '_hls_get_completions = hls_autocomplete.get_completions:main',
-            'hls = hls_autocomplete.hls:hls'
+            'hls = hls_autocomplete.hls_cmd:main'
         ]
     },
     #test_suite='tests'

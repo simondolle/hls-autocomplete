@@ -1,11 +1,9 @@
-from __future__ import print_function
 
-import sys
+
 import subprocess
 import os.path
-import json
 
-from update import update, LsParser
+from update import LsParser
 
 class CacheHls(object):
     def __init__(self, lister, cache):
@@ -15,7 +13,6 @@ class CacheHls(object):
     def list_status(self, path):
         hls_return_code, hls_result = self.lister.hls(path)
         if hls_return_code == 0:
-            print ("update")
             self.update_cache(path, hls_result)
         return hls_result
 
@@ -26,7 +23,6 @@ class CacheHls(object):
 
         self.cache = self.cache.update_directory(path, ls_result)
         return self.cache
-
 
 class HlsSubprocess(object):
     def list_status(self, path):
@@ -48,14 +44,5 @@ class HlsHdfs(HlsSubprocess):
 
 class HlsLs(HlsSubprocess):
     def get_process(self, path):
-        return subprocess.Popen("ls -ls %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
+        return subprocess.Popen("ls -ld %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
 
-def main():
-    if len(sys.argv) > 1:
-        lister = HlsHdfs()
-        lister = CacheHls(lister)
-        hls_result, cache = lister.list_status(sys.argv[1])
-        print(hls_result, end="")
-
-if __name__ == "__main__":
-    main()
