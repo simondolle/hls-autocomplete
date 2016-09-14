@@ -83,8 +83,8 @@ class Cache(object):
         try:
             cache_content = open(input_file)
         except:
-            return {}
-        return json.load(cache_content)
+            return Cache({})
+        return Cache(json.load(cache_content))
 
     def save(self):
         json.dump(self.json, open(Cache.get_cache_path(), "w"), indent=4, sort_keys=True)
@@ -100,14 +100,14 @@ class CacheCompleter(object):
         completions = self.get_completions(path, cache)
         if len(completions) == 0:
             lister.list_status(get_path_to_complete(path))
-            cache = Cache(Cache.load_cache())
+            cache = Cache.load_cache()
             completions = self.get_completions(path, cache)
         return completions
 
 
 def main():
     completer = CacheCompleter()
-    hls_cache = Cache(Cache.load_cache())
+    hls_cache = Cache.load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsLs()

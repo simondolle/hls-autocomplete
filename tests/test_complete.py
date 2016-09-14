@@ -118,7 +118,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         })
         path = "/Users/simon/D"
 
-        updated_cache = {
+        updated_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {},
@@ -126,7 +126,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        }
+        })
 
         load_cache_mock.return_value = updated_cache
         lister_mock = mock.MagicMock()
@@ -148,12 +148,12 @@ class TestLoadCache(unittest.TestCase):
 
         m = mock.mock_open(read_data='{"foo":{}}')
         with mock.patch("hls_autocomplete.complete.open", m, create=True):
-            self.assertEqual({"foo": {}}, Cache.load_cache())
+            self.assertEqual(Cache({"foo": {}}), Cache.load_cache())
 
     @mock.patch("hls_autocomplete.complete.Cache.get_cache_path")
     def test_unexisting_file(self, get_cache_path_mock):
         get_cache_path_mock.return_value = "/tmp/unexisting_file"
-        self.assertEqual({}, Cache.load_cache())
+        self.assertEqual(Cache({}), Cache.load_cache())
 
 class TestIsValidPath(unittest.TestCase):
     def test_is_valid_path(self):
