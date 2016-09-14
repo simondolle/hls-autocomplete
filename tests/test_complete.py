@@ -6,7 +6,7 @@ from hls_autocomplete.complete import CacheCompleter, get_path_to_complete, is_v
 class TestGetCompletions(unittest.TestCase):
 
     def setUp(self):
-        self.json = {
+        self.cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {
@@ -20,67 +20,67 @@ class TestGetCompletions(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        }
+        })
         self.completer = CacheCompleter()
 
 
     def test_nominal_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/D", self.json)
+                "/Users/simon/D", self.cache)
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_directory_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/", self.json)
+                "/Users/simon/", self.cache)
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_directory_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/", self.json)
+                "/Users/simon/", self.cache)
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_unexisting_directory(self):
         actual_result = self.completer.get_completions(
-                "/Users/toto/t", self.json)
+                "/Users/toto/t", self.cache)
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_too_long_path(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/Documents/work/old", self.json)
+                "/Users/simon/Documents/work/old", self.cache)
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_double_slash(self):
         actual_result = self.completer.get_completions(
-            "/Users/simon//", self.json)
+            "/Users/simon//", self.cache)
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_root_only(self):
         actual_result = self.completer.get_completions(
-                "/", self.json)
+                "/", self.cache)
         expected_result = ["/Users/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_second_level(self):
         actual_result = self.completer.get_completions(
-                "/Users/si", self.json)
+                "/Users/si", self.cache)
         expected_result = ["/Users/simon/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_file_with_extension(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/Documents/work/C", self.json)
+                "/Users/simon/Documents/work/C", self.cache)
         expected_result = ["/Users/simon/Documents/work/CV.doc"]
         self.assertEquals(expected_result, actual_result)
 
     def test_empty_json(self):
         actual_result = self.completer.get_completions(
-                "/Users", {})
+                "/Users", Cache({}))
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
@@ -89,7 +89,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         self.completer = CacheCompleter()
 
     def testNoUpdate(self):
-        cache = {
+        cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {
@@ -103,7 +103,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        }
+        })
         lister_mock = mock.MagicMock()
         path = "/Users/s"
         self.assertEquals(["/Users/simon/"], self.completer.get_completions_with_update(path, cache, lister_mock))
@@ -111,14 +111,14 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
 
     @mock.patch("hls_autocomplete.complete.Cache.load_cache")
     def testUpdate(self, load_cache_mock):
-        cache = {
+        cache = Cache({
             "Users": {
                 "simon": {}
             }
-        }
+        })
         path = "/Users/simon/D"
 
-        updated_cache = Cache({
+        updated_cache = {
             "Users": {
                 "simon": {
                     "Music": {},
@@ -126,7 +126,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        })
+        }
 
         load_cache_mock.return_value = updated_cache
         lister_mock = mock.MagicMock()
@@ -142,19 +142,17 @@ class TestGetPathToComplete(unittest.TestCase):
         self.assertEquals("/Users/simon", get_path_to_complete("/Users/simon/"))
 
 class TestLoadCache(unittest.TestCase):
-    def test_nominal_case(self):
-        get_cache_path_mock = mock.MagicMock()
+    @mock.patch("hls_autocomplete.complete.Cache.get_cache_path")
+    def test_nominal_case(self, get_cache_path_mock):
         get_cache_path_mock.return_value = "/tmp/file"
-        Cache.get_cache_path = get_cache_path_mock
 
         m = mock.mock_open(read_data='{"foo":{}}')
         with mock.patch("hls_autocomplete.complete.open", m, create=True):
             self.assertEqual({"foo": {}}, Cache.load_cache())
 
-    def test_nominal_case(self):
-        completer = CacheCompleter()
-        completer.get_cache_path = mock.MagicMock()
-        completer.get_cache_path.return_value = "/tmp/unexisting_file"
+    @mock.patch("hls_autocomplete.complete.Cache.get_cache_path")
+    def test_unexisting_file(self, get_cache_path_mock):
+        get_cache_path_mock.return_value = "/tmp/unexisting_file"
         self.assertEqual({}, Cache.load_cache())
 
 class TestIsValidPath(unittest.TestCase):
