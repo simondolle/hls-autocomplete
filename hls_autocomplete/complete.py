@@ -5,7 +5,7 @@ import sys
 import json
 
 from utils import append_slash, split_path
-from hls import HlsHdfs, CacheHls
+from hls import HlsHdfs, HlsLs, CacheHls
 
 def get_path_to_complete(path):
     if path.endswith("/"):
@@ -47,9 +47,8 @@ class Cache(object):
         return sorted(result)
 
     def update_directory(self, directory, ls_results):
-        result = self.json
         if not is_valid_path(directory):
-            return result
+            return self
         cache = self.json
         for path_chunk in split_path(directory):
             if path_chunk not in cache:
@@ -66,7 +65,10 @@ class Cache(object):
         old_entries = set(cache.keys()).difference(set([basename for basename, is_dir in basenames]))
         for old_entry in old_entries:
             del cache[old_entry]
-        return result
+        return self
+
+    def __eq__(self, other):
+        return self.json == other.json
 
     @classmethod
     def get_cache_path(c):
@@ -93,15 +95,15 @@ class CacheCompleter(object):
     def get_completions_with_update(self, path, cache, lister):
         completions = self.get_completions(path, cache)
         if len(completions) == 0:
-            lister.hls_with_update(get_path_to_complete(path))
-            cache = self.load_cache()
-            completions = self.get_completions(path, cache)
+            lister.list_status(get_path_to_complete(path))
+            cache = Cache.load_cache()
+            completions = self.get_completions(path, cache.json)
         return completions
 
 
 def main():
     completer = CacheCompleter()
-    hls_cache = completer.load_cache()
+    hls_cache = Cache.load_cache()
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsHdfs()

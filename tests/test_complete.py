@@ -109,7 +109,8 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         self.assertEquals(["/Users/simon/"], self.completer.get_completions_with_update(path, cache, lister_mock))
         lister_mock.hls_with_update_mock.assert_not_called()
 
-    def testUpdate(self):
+    @mock.patch("hls_autocomplete.complete.Cache.load_cache")
+    def testUpdate(self, load_cache_mock):
         cache = {
             "Users": {
                 "simon": {}
@@ -117,7 +118,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         }
         path = "/Users/simon/D"
 
-        updated_cache = {
+        updated_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {},
@@ -125,14 +126,12 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        }
+        })
 
-        load_cache_mock = mock.MagicMock()
         load_cache_mock.return_value = updated_cache
-        self.completer.load_cache = load_cache_mock
-
         lister_mock = mock.MagicMock()
         lister_mock.hls_with_update.return_value = None
+
         self.assertEquals(["/Users/simon/Documents/", "/Users/simon/Dropbox/"],
                           self.completer.get_completions_with_update(path, cache, lister_mock))
 

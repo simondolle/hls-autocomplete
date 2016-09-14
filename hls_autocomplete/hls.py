@@ -5,7 +5,7 @@ import subprocess
 import os.path
 import json
 
-from hls_autocomplete.update import update, LsParser
+from update import update, LsParser
 
 class CacheHls(object):
     def __init__(self, lister, cache):

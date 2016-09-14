@@ -29,7 +29,7 @@ class TestUpdateDirectory(unittest.TestCase):
                  FileStatus("/Users/simon/Dropbox", True),
                  FileStatus("/Users/simon/Pictures", True)])
 
-        expected_cache = {
+        expected_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {
@@ -44,7 +44,7 @@ class TestUpdateDirectory(unittest.TestCase):
                     "Pictures": {}
                 }
             }
-        }
+        })
         self.assertEquals(expected_cache, cache)
 
     def test_update_directory(self):
@@ -54,7 +54,7 @@ class TestUpdateDirectory(unittest.TestCase):
                     FileStatus("/Users/simon/Pictures", True),
                     FileStatus("/Users/simon/CV.doc", False),
                  ])
-        expected_cache = {
+        expected_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {
@@ -65,7 +65,7 @@ class TestUpdateDirectory(unittest.TestCase):
                     "CV.doc": None
                 }
             }
-        }
+        })
         self.assertEquals(expected_cache, cache)
 
     def test_update_empty_cache(self):
@@ -73,14 +73,14 @@ class TestUpdateDirectory(unittest.TestCase):
         cache = cache.update_directory("/Users/simon",
                  [FileStatus("/Users/simon/Music", True),
                      FileStatus("/Users/simon/Movies", True)])
-        expected_cache = {
+        expected_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {},
                     "Movies": {}
                 }
             }
-        }
+        })
         self.assertEquals(expected_cache, cache)
 
     def test_update_invalid_path(self):
@@ -90,7 +90,7 @@ class TestUpdateDirectory(unittest.TestCase):
                           FileStatus("/Users/simon/Pictures", True),
                           FileStatus("/Users/simon/CV.doc", False),
                           ])
-        expected_cache = {
+        expected_cache = Cache({
             "Users": {
                 "simon": {
                     "Music": {
@@ -104,7 +104,7 @@ class TestUpdateDirectory(unittest.TestCase):
                     "Dropbox": {}
                 }
             }
-        }
+        })
         self.assertEquals(expected_cache, cache)
 
 class TestLsParser(unittest.TestCase):
