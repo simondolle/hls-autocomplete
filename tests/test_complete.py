@@ -21,7 +21,7 @@ class TestGetCompletions(unittest.TestCase):
                 }
             }
         })
-        self.completer = CacheCompleter(self.cache)
+        self.completer = CacheCompleter(self.cache, None)
 
 
     def test_nominal_case(self):
@@ -79,7 +79,7 @@ class TestGetCompletions(unittest.TestCase):
         self.assertEquals(expected_result, actual_result)
 
     def test_empty_json(self):
-        actual_result = CacheCompleter(Cache({})).get_completions(
+        actual_result = CacheCompleter(Cache({}), None).get_completions(
                 "/Users")
         expected_result = []
         self.assertEquals(expected_result, actual_result)
@@ -103,7 +103,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         })
         lister_mock = mock.MagicMock()
         path = "/Users/s"
-        self.assertEquals(["/Users/simon/"], CacheCompleter(cache).get_completions_with_update(path, lister_mock))
+        self.assertEquals(["/Users/simon/"], CacheCompleter(cache, lister_mock).get_completions_with_update(path))
         lister_mock.hls_with_update_mock.assert_not_called()
 
     @mock.patch("hls_autocomplete.complete.Cache.load_cache")
@@ -130,7 +130,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         lister_mock.hls_with_update.return_value = None
 
         self.assertEquals(["/Users/simon/Documents/", "/Users/simon/Dropbox/"],
-                          CacheCompleter(cache).get_completions_with_update(path, lister_mock))
+                          CacheCompleter(cache, lister_mock).get_completions_with_update(path))
 
 
 class TestGetPathToComplete(unittest.TestCase):
