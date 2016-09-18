@@ -90,29 +90,29 @@ class Cache(object):
         json.dump(self.json, open(Cache.get_cache_path(), "w"), indent=4, sort_keys=True)
 
 class CacheCompleter(object):
-    def __init__(self):
-        pass
+    def __init__(self, cache):
+        self.cache = cache
 
-    def get_completions(self, path, cache):
-        return cache.get_completions(path)
+    def get_completions(self, path):
+        return self.cache.get_completions(path)
 
-    def get_completions_with_update(self, path, cache, lister):
-        completions = self.get_completions(path, cache)
+    def get_completions_with_update(self, path, lister):
+        completions = self.get_completions(path)
         if len(completions) == 0:
             lister.list_status(get_path_to_complete(path))
-            cache = Cache.load_cache()
-            completions = self.get_completions(path, cache)
+            self.cache = Cache.load_cache()
+            completions = self.get_completions(path)
         return completions
 
 
 def main():
-    completer = CacheCompleter()
     hls_cache = Cache.load_cache()
+    completer = CacheCompleter(hls_cache)
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         lister = HlsLs()
         lister = CacheHls(lister, hls_cache)
-        completions = completer.get_completions_with_update(input_path, hls_cache, lister)
+        completions = completer.get_completions_with_update(input_path, lister)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")

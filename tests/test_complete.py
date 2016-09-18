@@ -21,73 +21,70 @@ class TestGetCompletions(unittest.TestCase):
                 }
             }
         })
-        self.completer = CacheCompleter()
+        self.completer = CacheCompleter(self.cache)
 
 
     def test_nominal_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/D", self.cache)
+                "/Users/simon/D")
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_directory_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/", self.cache)
+                "/Users/simon/")
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_directory_case(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/", self.cache)
+                "/Users/simon/")
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_unexisting_directory(self):
         actual_result = self.completer.get_completions(
-                "/Users/toto/t", self.cache)
+                "/Users/toto/t")
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_too_long_path(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/Documents/work/old", self.cache)
+                "/Users/simon/Documents/work/old")
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
     def test_double_slash(self):
         actual_result = self.completer.get_completions(
-            "/Users/simon//", self.cache)
+            "/Users/simon//")
         expected_result = ["/Users/simon/Documents/", "/Users/simon/Dropbox/", "/Users/simon/Music/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_root_only(self):
         actual_result = self.completer.get_completions(
-                "/", self.cache)
+                "/")
         expected_result = ["/Users/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_second_level(self):
         actual_result = self.completer.get_completions(
-                "/Users/si", self.cache)
+                "/Users/si")
         expected_result = ["/Users/simon/"]
         self.assertEquals(expected_result, actual_result)
 
     def test_file_with_extension(self):
         actual_result = self.completer.get_completions(
-                "/Users/simon/Documents/work/C", self.cache)
+                "/Users/simon/Documents/work/C")
         expected_result = ["/Users/simon/Documents/work/CV.doc"]
         self.assertEquals(expected_result, actual_result)
 
     def test_empty_json(self):
-        actual_result = self.completer.get_completions(
-                "/Users", Cache({}))
+        actual_result = CacheCompleter(Cache({})).get_completions(
+                "/Users")
         expected_result = []
         self.assertEquals(expected_result, actual_result)
 
 class TestGetCompletionsWithUpdate(unittest.TestCase):
-    def setUp(self):
-        self.completer = CacheCompleter()
-
     def testNoUpdate(self):
         cache = Cache({
             "Users": {
@@ -106,7 +103,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         })
         lister_mock = mock.MagicMock()
         path = "/Users/s"
-        self.assertEquals(["/Users/simon/"], self.completer.get_completions_with_update(path, cache, lister_mock))
+        self.assertEquals(["/Users/simon/"], CacheCompleter(cache).get_completions_with_update(path, lister_mock))
         lister_mock.hls_with_update_mock.assert_not_called()
 
     @mock.patch("hls_autocomplete.complete.Cache.load_cache")
@@ -133,7 +130,7 @@ class TestGetCompletionsWithUpdate(unittest.TestCase):
         lister_mock.hls_with_update.return_value = None
 
         self.assertEquals(["/Users/simon/Documents/", "/Users/simon/Dropbox/"],
-                          self.completer.get_completions_with_update(path, cache, lister_mock))
+                          CacheCompleter(cache).get_completions_with_update(path, lister_mock))
 
 
 class TestGetPathToComplete(unittest.TestCase):
