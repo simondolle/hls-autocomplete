@@ -95,16 +95,12 @@ class CacheCompleter(object):
         self.lister = lister
 
     def get_completions(self, path):
-        return self.cache.get_completions(path)
-
-    def get_completions_with_update(self, path):
-        completions = self.get_completions(path)
+        completions = self.cache.get_completions(path)
         if len(completions) == 0:
             self.lister.list_status(get_path_to_complete(path))
             self.cache = Cache.load_cache()
-            completions = self.get_completions(path)
+            completions = self.cache.get_completions(path)
         return completions
-
 
 def main():
     if len(sys.argv) > 1:
@@ -113,7 +109,7 @@ def main():
         hls_cache = Cache.load_cache()
         lister = CacheHls(lister, hls_cache)
         completer = CacheCompleter(hls_cache, lister)
-        completions = completer.get_completions_with_update(input_path)
+        completions = completer.get_completions(input_path)
         completions = ["%s"%s for s in completions]
         result = "\n".join(completions)
         print result.encode("utf-8")
