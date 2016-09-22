@@ -34,13 +34,3 @@ class LsParser(object):
     def parse(self, output):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
-
-def update(path, hls_result):
-    hls_cache = load_cache()
-
-    ls_parser = LsParser()
-    ls_result = ls_parser.parse(hls_result)
-
-    hls_cache = update_directory(path, ls_result, hls_cache)
-    json.dump(hls_cache, open(get_cache_path(), "w"), indent=4)
-    return hls_cache
