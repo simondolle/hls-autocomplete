@@ -3,7 +3,7 @@
 import subprocess
 import os.path
 
-from update import LsParser
+from update import LsParser, FileStatus
 
 class CacheHls(object):
     def __init__(self, lister, cache):
@@ -32,6 +32,8 @@ class HlsSubprocess(object):
         hls_return_code = p.returncode
         ls_parser = LsParser()
         hls_result = ls_parser.parse(hls_result)
+        hls_result = [FileStatus(os.path.relpath(fileStatus.path, path), fileStatus.is_dir) for fileStatus in hls_result]
+
         return hls_return_code, hls_result
 
     def get_process(self, path):

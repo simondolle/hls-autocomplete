@@ -15,8 +15,8 @@ class TestHls(unittest.TestCase):
         popen_mock.return_value = process_mock
 
         lister = HlsHdfs()
-        self.assertEqual((0, [FileStatus("/Users/simon/Music", True)]), lister.hls("foo"))
-        popen_mock.assert_called_once_with(['hdfs', 'dfs', '-ls', 'foo'], stdout=subprocess.PIPE)
+        self.assertEqual((0, [FileStatus("Music", True)]), lister.hls("/Users/simon/"))
+        popen_mock.assert_called_once_with(['hdfs', 'dfs', '-ls', '/Users/simon/'], stdout=subprocess.PIPE)
 
 class TestHlsWithUpdate(unittest.TestCase):
     def test_nominal_case(self):
