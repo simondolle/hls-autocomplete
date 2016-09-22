@@ -79,7 +79,6 @@ class Cache(object):
     @classmethod
     def load_cache(c):
         input_file = Cache.get_cache_path()
-        print input_file
         try:
             cache_content = open(input_file)
         except:
