@@ -18,10 +18,7 @@ class CacheHls(object):
 
     def update_cache(self, path, hls_result):
 
-        ls_parser = LsParser()
-        ls_result = ls_parser.parse(hls_result)
-
-        self.cache = self.cache.update_directory(path, ls_result)
+        self.cache = self.cache.update_directory(path, hls_result)
         return self.cache
 
 class HlsSubprocess(object):
@@ -33,6 +30,8 @@ class HlsSubprocess(object):
         hls_result = p.communicate()[0]
         hls_result = hls_result.decode("utf-8")
         hls_return_code = p.returncode
+        ls_parser = LsParser()
+        hls_result = ls_parser.parse(hls_result)
         return hls_return_code, hls_result
 
     def get_process(self, path):
