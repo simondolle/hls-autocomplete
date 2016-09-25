@@ -4,6 +4,11 @@ import datetime
 from hls_autocomplete.complete import Cache
 from hls_autocomplete.update import FileStatus, LsParser
 
+class TestFileStatus(unittest.TestCase):
+    def test_str(self):
+        fileStatus = FileStatus("/Users/simon/Music", True, "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 12, 27))
+        self.assertEquals("drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music", str(fileStatus))
+
 class TestUpdateDirectory(unittest.TestCase):
     def setUp(self):
         self.json = {
@@ -23,7 +28,6 @@ class TestUpdateDirectory(unittest.TestCase):
         }
         self.cache = Cache(self.json)
 
-    "drwx------+  8 simon  staff  272 17 nov  2014"
     def test_new_directory(self):
         cache = self.cache.update_directory("/Users/simon/",
                 [FileStatus("/Users/simon/Music", True, "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 11, 20)),

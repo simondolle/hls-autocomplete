@@ -26,7 +26,8 @@ class FileStatus(object):
                 self.size == other.size and self.date == other.date)
 
     def __str__(self):
-        return str((self.path, self.is_dir))
+        result = "%s  %d %s  %s  %d %s %s" % (self.rights, self.nbFiles, self.owner, self.group, self.size, self.date.strftime("%d %b  %Y").lower(), self.path)
+        return result
 
 class LsParser(object):
     def __init__(self):
