@@ -52,7 +52,7 @@ class LsParser(object):
 
         #""drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music""
 
-        regex = "^([rwxd+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+(\d+)\s+([\w\/]+)"
+        regex = "^([rwxd@+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+([:\d]+)\s+([\w\/]+)"
         m = re.match(regex, line, re.UNICODE)
         if m is None:
             return None
@@ -68,9 +68,12 @@ class LsParser(object):
         try:
             month = strptime(month, '%b').tm_mon
         except:
-            month = [u"jan", u"fév", u"mar", u"avr", u"mai", u"jui", u"juil", u"aou", u"sep", u"oct", u"nov", u"déc"].index(month) + 1
-        year = int(m.group(8))
+            month = [u"jan", u"fév", u"mar", u"avr", u"mai", u"jui", u"juil", u"aoû", u"sep", u"oct", u"nov", u"déc"].index(month) + 1
 
+        try:
+            year = int(m.group(8))
+        except:
+            year = datetime.datetime.now().year
         path = m.group(9)
 
         date = datetime.date(year, month, day)
