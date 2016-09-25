@@ -1,5 +1,3 @@
-
-
 import subprocess
 import os.path
 
@@ -47,4 +45,3 @@ class HlsHdfs(HlsSubprocess):
 class HlsLs(HlsSubprocess):
     def get_process(self, path):
         return subprocess.Popen("ls -ld %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
-

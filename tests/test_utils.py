@@ -13,4 +13,3 @@ class TestAppendSlash(unittest.TestCase):
     def test_nominal_case(self):
         self.assertEquals("/user/s.dolle/Music/", complete.append_slash("/user/s.dolle/Music", True))
         self.assertEquals("/user/s.dolle/Music", complete.append_slash("/user/s.dolle/Music", False))
-

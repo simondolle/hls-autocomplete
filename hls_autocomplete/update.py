@@ -43,10 +43,6 @@ class LsParser(object):
         m = re.match("^([rwxd+-]+)", line)
         if m is None:
             return None
-        is_dir = m.group(1).startswith("d")
-
-
-        #""drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music""
 
         regex = "^([rwxd@+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+([:\d]+)\s+([\w\/]+)"
         m = re.match(regex, line, re.UNICODE)
