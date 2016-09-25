@@ -2,16 +2,28 @@ from optparse import OptionParser
 import json
 import sys
 import os.path
-
+import datetime
+from time import strptime
 import re
 
 class FileStatus(object):
-    def __init__(self, path, is_dir):
+    def __init__(self, path, is_dir, rights, nbFiles, owner, group, size, date):
         self.path = path
         self.is_dir = is_dir
 
+        self.rights = rights
+        self.nbFiles = nbFiles
+        self.owner = owner
+        self.group = group
+
+        self.size = size
+
+        self.date = date
+
     def __eq__(self, other):
-        return self.path == other.path and self.is_dir == other.is_dir
+        return (self.path == other.path and self.is_dir == other.is_dir and self.rights == other.rights and
+                self.nbFiles == other.nbFiles and self.owner == other.owner and self.group == other.group and
+                self.size == other.size and self.date == other.date)
 
     def __str__(self):
         return str((self.path, self.is_dir))
@@ -29,7 +41,29 @@ class LsParser(object):
         if m is None:
             return None
         is_dir = m.group(1).startswith("d")
-        return FileStatus(filename, is_dir)
+
+
+        #""drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music""
+
+        regex = "^([rwxd+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+(\d+)\s+([\w\/]+)"
+        m = re.match(regex, line)
+        if m is not None:
+            rights =  m.group(1)
+            nbFiles = int(m.group(2))
+            owner =  m.group(3)
+            group = m.group(4)
+            size = int(m.group(5))
+
+            day = int(m.group(6))
+            month = m.group(7)
+            month = strptime(month, '%b').tm_mon
+            year = int(m.group(8))
+
+            path = m.group(9)
+
+            date = datetime.date(year, month, day)
+
+        return FileStatus(filename, is_dir, rights, nbFiles, owner, group, size, date)
 
     def parse(self, output):
         result = [self.parse_line(line) for line in output.split("\n")]
