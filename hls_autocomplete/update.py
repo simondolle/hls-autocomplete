@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
 from optparse import OptionParser
 import json
 import sys
@@ -50,7 +53,7 @@ class LsParser(object):
         #""drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music""
 
         regex = "^([rwxd+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+(\d+)\s+([\w\/]+)"
-        m = re.match(regex, line)
+        m = re.match(regex, line, re.UNICODE)
         if m is None:
             return None
 
@@ -62,7 +65,10 @@ class LsParser(object):
 
         day = int(m.group(6))
         month = m.group(7)
-        month = strptime(month, '%b').tm_mon
+        try:
+            month = strptime(month, '%b').tm_mon
+        except:
+            month = [u"jan", u"fév", u"mar", u"avr", u"mai", u"jui", u"juil", u"aou", u"sep", u"oct", u"nov", u"déc"].index(month) + 1
         year = int(m.group(8))
 
         path = m.group(9)
