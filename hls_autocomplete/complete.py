@@ -54,7 +54,7 @@ class Cache(object):
             if path_chunk not in cache:
                 cache[path_chunk] = {}
             cache = cache[path_chunk]
-        basenames = [(os.path.basename(ls_result.path), ls_result.is_dir) for ls_result in ls_results]
+        basenames = [(os.path.basename(ls_result.path), ls_result.is_dir()) for ls_result in ls_results]
         for basename, is_dir in basenames:
             if basename not in cache:
                 if is_dir:

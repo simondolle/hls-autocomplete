@@ -7,9 +7,8 @@ from time import strptime
 import re
 
 class FileStatus(object):
-    def __init__(self, path, is_dir, rights, nbFiles, owner, group, size, date):
+    def __init__(self, path, rights, nbFiles, owner, group, size, date):
         self.path = path
-        self.is_dir = is_dir
 
         self.rights = rights
         self.nbFiles = nbFiles
@@ -21,9 +20,12 @@ class FileStatus(object):
         self.date = date
 
     def __eq__(self, other):
-        return (self.path == other.path and self.is_dir == other.is_dir and self.rights == other.rights and
+        return (self.path == other.path and self.rights == other.rights and
                 self.nbFiles == other.nbFiles and self.owner == other.owner and self.group == other.group and
                 self.size == other.size and self.date == other.date)
+
+    def is_dir(self):
+        return self.rights.startswith("d")
 
     def __str__(self):
         result = "%s  %d %s  %s  %d %s %s" % (self.rights, self.nbFiles, self.owner, self.group, self.size, self.date.strftime("%d %b  %Y").lower(), self.path)
@@ -64,7 +66,7 @@ class LsParser(object):
 
             date = datetime.date(year, month, day)
 
-        return FileStatus(filename, is_dir, rights, nbFiles, owner, group, size, date)
+        return FileStatus(filename, rights, nbFiles, owner, group, size, date)
 
     def parse(self, output):
         result = [self.parse_line(line) for line in output.split("\n")]
