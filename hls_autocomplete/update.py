@@ -18,6 +18,7 @@ class FileStatus(object):
         self.size = size
 
         self.date = date
+        self.relpath = None
 
     def __eq__(self, other):
         return (self.path == other.path and self.rights == other.rights and
@@ -50,21 +51,23 @@ class LsParser(object):
 
         regex = "^([rwxd+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+(\d+)\s+([\w\/]+)"
         m = re.match(regex, line)
-        if m is not None:
-            rights =  m.group(1)
-            nbFiles = int(m.group(2))
-            owner =  m.group(3)
-            group = m.group(4)
-            size = int(m.group(5))
+        if m is None:
+            return None
 
-            day = int(m.group(6))
-            month = m.group(7)
-            month = strptime(month, '%b').tm_mon
-            year = int(m.group(8))
+        rights =  m.group(1)
+        nbFiles = int(m.group(2))
+        owner =  m.group(3)
+        group = m.group(4)
+        size = int(m.group(5))
 
-            path = m.group(9)
+        day = int(m.group(6))
+        month = m.group(7)
+        month = strptime(month, '%b').tm_mon
+        year = int(m.group(8))
 
-            date = datetime.date(year, month, day)
+        path = m.group(9)
+
+        date = datetime.date(year, month, day)
 
         return FileStatus(filename, rights, nbFiles, owner, group, size, date)
 

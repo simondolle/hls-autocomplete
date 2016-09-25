@@ -32,7 +32,8 @@ class HlsSubprocess(object):
         hls_return_code = p.returncode
         ls_parser = LsParser()
         hls_result = ls_parser.parse(hls_result)
-        hls_result = [FileStatus(os.path.relpath(fileStatus.path, path), fileStatus.rights, fileStatus.nbFiles, fileStatus.owner, fileStatus.group, fileStatus.size, fileStatus.date) for fileStatus in hls_result]
+        for fileStatus in hls_result:
+            fileStatus.relpath = os.path.relpath(fileStatus.path, path)
 
         return hls_return_code, hls_result
 
