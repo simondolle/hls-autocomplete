@@ -4,6 +4,8 @@
 import datetime
 from time import strptime
 import re
+import os
+import json
 
 class FileStatus(object):
     def __init__(self, path, rights, nbFiles, owner, group, size, date, relpath = None):
@@ -45,6 +47,7 @@ class LsParser(object):
             return None
 
         regex = "^([rwxd@+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+([:\d]+)\s+([\w\/]+)"
+
         m = re.match(regex, line, re.UNICODE)
         if m is None:
             return None
@@ -75,3 +78,44 @@ class LsParser(object):
     def parse(self, output):
         result = [self.parse_line(line) for line in output.split("\n")]
         return [p for p in result if p is not None]
+
+class WebHdfsParser(object):
+    def __init__(self, path):
+        self.path = path
+
+    def permissions_to_unix_name(self, is_dir, rights):
+        is_dir_prefix = 'd' if is_dir else '-'
+        dic = {'7': 'rwx', '6': 'rw-', '5': 'r-x', '4': 'r--', '0': '---'}
+        perm = str(oct(rights)[-3:])
+        return is_dir_prefix + ''.join(dic.get(x, x) for x in perm)
+
+    def parse_status(self, status):
+        relpath = status["pathSuffix"]
+        path = os.path.join(self.path, relpath)
+        nbFiles = 0
+        size = status["length"]
+        owner = status["owner"]
+        group = status["group"]
+        is_dir = status["type"] == "DIRECTORY"
+        right_digits = status["permission"]
+        rights = self.permissions_to_unix_name(is_dir, right_digits)
+        date = datetime.datetime.fromtimestamp(int(status["modificationTime"]))
+
+        return FileStatus(path, rights, nbFiles, owner, group, size, date, relpath)
+
+    def parse(self, output):
+        """
+        {"FileStatuses": {"FileStatus": [
+            {"pathSuffix": ".Trash", "type": "DIRECTORY", "length": 0, "owner": "recocomputer", "group": "recocomputer",
+             "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0},
+            {"pathSuffix": "bestofs", "type": "DIRECTORY", "length": 0, "owner": "recocomputer",
+             "group": "recocomputer", "permission": "775", "accessTime": 0, "modificationTime": 1473691319065,
+             "blockSize": 0, "replication": 0}}
+        """
+
+        j = json.loads(output)
+        statuses = j["FileStatuses"]
+        result = []
+        for status in statuses:
+            result.append(self.parse_status(status))
+        return result
