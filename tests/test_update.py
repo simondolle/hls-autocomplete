@@ -1,117 +1,12 @@
 import unittest
 import datetime
 
-from hls_autocomplete.complete import Cache
 from hls_autocomplete.update import FileStatus, LsParser
 
 class TestFileStatus(unittest.TestCase):
     def test_str(self):
         fileStatus = FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 12, 27))
         self.assertEquals("drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music", str(fileStatus))
-
-class TestUpdateDirectory(unittest.TestCase):
-    def setUp(self):
-        self.json = {
-            "Users": {
-                "simon": {
-                    "Music": {
-                        "Spotify": {}
-                    },
-                    "Documents": {
-                        "work": {
-                            "CV.doc": None
-                        }
-                    },
-                    "Dropbox": {}
-                }
-            }
-        }
-        self.cache = Cache(self.json)
-
-    def test_new_directory(self):
-        cache = self.cache.update_directory("/Users/simon/",
-                [FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 11, 20)),
-                 FileStatus("/Users/simon/Documents", "drwx------+", 8, "simon", "staff", 300, datetime.date(2015, 3, 10)),
-                 FileStatus("/Users/simon/Dropbox", "drwx------+", 3, "simon", "staff", 272, datetime.date(2016, 8, 20)),
-                 FileStatus("/Users/simon/Pictures", "drwx------+", 8, "simon", "staff", 180, datetime.date(2015, 10, 28))])
-
-        expected_cache = Cache({
-            "Users": {
-                "simon": {
-                    "Music": {
-                        "Spotify": {}
-                    },
-                    "Documents": {
-                        "work": {
-                            "CV.doc": None
-                        }
-                    },
-                    "Dropbox": {},
-                    "Pictures": {}
-                }
-            }
-        })
-        self.assertEquals(expected_cache, cache)
-
-    def test_update_directory(self):
-        cache = self.cache.update_directory("/Users/simon",
-                    [FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 11, 20)),
-                    FileStatus("/Users/simon/Movies", "drwx------+", 8, "simon", "staff", 180, datetime.date(2016, 4, 7)),
-                    FileStatus("/Users/simon/Pictures", "drwx------+", 8, "simon", "staff", 180, datetime.date(2015, 10, 28)),
-                    FileStatus("/Users/simon/CV.doc", "-rwx------+", 1, "simon", "staff", 1180, datetime.date(2015, 10, 4)),
-                 ])
-        expected_cache = Cache({
-            "Users": {
-                "simon": {
-                    "Music": {
-                        "Spotify": {}
-                    },
-                    "Movies": {},
-                    "Pictures": {},
-                    "CV.doc": None
-                }
-            }
-        })
-        self.assertEquals(expected_cache, cache)
-
-    def test_update_empty_cache(self):
-        cache = Cache({})
-        cache = cache.update_directory("/Users/simon",
-                 [FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 11, 20)),
-                     FileStatus("/Users/simon/Movies", "drwx------+", 8, "simon", "staff", 180, datetime.date(2016, 4, 7))])
-        expected_cache = Cache({
-            "Users": {
-                "simon": {
-                    "Music": {},
-                    "Movies": {}
-                }
-            }
-        })
-        self.assertEquals(expected_cache, cache)
-
-    def test_update_invalid_path(self):
-        cache = self.cache.update_directory("/Users/*",
-                         [FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 11, 20)),
-                          FileStatus("/Users/simon/Movies", "drwx------+", 8, "simon", "staff", 180, datetime.date(2016, 4, 7)),
-                          FileStatus("/Users/simon/Pictures", "drwx------+", 8, "simon", "staff", 180, datetime.date(2015, 10, 28)),
-                          FileStatus("/Users/simon/CV.doc", "-rwx------+", 1, "simon", "staff", 1180, datetime.date(2015, 10, 4)),
-                          ])
-        expected_cache = Cache({
-            "Users": {
-                "simon": {
-                    "Music": {
-                        "Spotify": {}
-                    },
-                    "Documents": {
-                        "work": {
-                            "CV.doc": None
-                        }
-                    },
-                    "Dropbox": {}
-                }
-            }
-        })
-        self.assertEquals(expected_cache, cache)
 
 class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):

@@ -1,8 +1,3 @@
-import os.path
-import json
-
-
-
 def split_path(path):
     path_chunks = path.split("/")
     path_chunks = [chunk for chunk in path_chunks if len(chunk) != 0]

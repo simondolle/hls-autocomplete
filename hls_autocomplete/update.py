@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from optparse import OptionParser
-import json
-import sys
-import os.path
 import datetime
 from time import strptime
 import re
 
 class FileStatus(object):
-    def __init__(self, path, rights, nbFiles, owner, group, size, date):
+    def __init__(self, path, rights, nbFiles, owner, group, size, date, relpath = None):
         self.path = path
 
         self.rights = rights
@@ -21,7 +17,7 @@ class FileStatus(object):
         self.size = size
 
         self.date = date
-        self.relpath = None
+        self.relpath = relpath
 
     def __eq__(self, other):
         return (self.path == other.path and self.rights == other.rights and

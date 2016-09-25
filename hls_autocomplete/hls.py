@@ -3,7 +3,7 @@
 import subprocess
 import os.path
 
-from update import LsParser, FileStatus
+from update import LsParser
 
 class CacheHls(object):
     def __init__(self, lister, cache):
