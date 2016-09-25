@@ -33,7 +33,7 @@ class FileStatus(object):
 
     def __str__(self):
         result = "%s  %d %s  %s  %d %s %s" % (self.rights, self.nbFiles, self.owner, self.group, self.size, self.date.strftime("%d %b  %Y").lower(), self.path)
-        return result
+        return result.encode("utf-8")
 
 class LsParser(object):
     def __init__(self):
