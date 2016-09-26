@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from hls_autocomplete.update import FileStatus, LsParser
+from hls_autocomplete.update import FileStatus, LsParser, WebHdfsParser
 
 class TestFileStatus(unittest.TestCase):
     def test_str(self):
@@ -38,3 +38,32 @@ class TestLsParser(unittest.TestCase):
                            FileStatus("/Users/simon/Documents", "drwx------+", 8, "simon", "staff", 272, datetime.date(2014, 11, 17))]
 
         self.assertEqual(expected_result, parser.parse(lines))
+
+class TestWebHdfsParser(unittest.TestCase):
+    def test_permissions_to_unix_name(self):
+        parser = WebHdfsParser(None)
+        self.assertEqual("-rwxrwxrwx", parser.permissions_to_unix_name(False, "777"))
+        self.assertEqual("-rw-rwxr--", parser.permissions_to_unix_name(False, "674"))
+        self.assertEqual("d---------", parser.permissions_to_unix_name(True, "000"))
+
+    def test_parse_status(self):
+        parser = WebHdfsParser("/foo")
+        input = {"pathSuffix": "bar", "type": "DIRECTORY", "length": 0, "owner": "simon", "group": "staff",
+             "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0}
+        expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.date(2016, 04, 21),"bar")
+        self.assertEqual(expected_result, parser.parse_status(input))
+
+    def test_parse(self):
+        input = '''{"FileStatuses": {"FileStatus": [
+            {"pathSuffix": "bar", "type": "DIRECTORY", "length": 0, "owner": "simon", "group": "staff",
+             "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0},
+            {"pathSuffix": "qux", "type": "FILE", "length": 0, "owner": "simon",
+             "group": "staff", "permission": "775", "accessTime": 0, "modificationTime": 1473691319065,
+             "blockSize": 0, "replication": 0}]}}'''
+        parser = WebHdfsParser("/foo")
+
+        expected_result = [
+            FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.date(2016, 4, 21), "bar"),
+            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.date(2016, 9, 12), "qux")
+        ]
+        self.assertEqual(expected_result, parser.parse(input))

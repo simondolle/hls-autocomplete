@@ -86,8 +86,7 @@ class WebHdfsParser(object):
     def permissions_to_unix_name(self, is_dir, rights):
         is_dir_prefix = 'd' if is_dir else '-'
         dic = {'7': 'rwx', '6': 'rw-', '5': 'r-x', '4': 'r--', '0': '---'}
-        perm = str(oct(rights)[-3:])
-        return is_dir_prefix + ''.join(dic.get(x, x) for x in perm)
+        return is_dir_prefix + ''.join(dic[x] for x in rights)
 
     def parse_status(self, status):
         relpath = status["pathSuffix"]
@@ -99,22 +98,16 @@ class WebHdfsParser(object):
         is_dir = status["type"] == "DIRECTORY"
         right_digits = status["permission"]
         rights = self.permissions_to_unix_name(is_dir, right_digits)
-        date = datetime.datetime.fromtimestamp(int(status["modificationTime"]))
+
+        parsed_date = datetime.datetime.fromtimestamp(int(status["modificationTime"])/1000)
+
+        date = datetime.date(parsed_date.year, parsed_date.month, parsed_date.day)
 
         return FileStatus(path, rights, nbFiles, owner, group, size, date, relpath)
 
     def parse(self, output):
-        """
-        {"FileStatuses": {"FileStatus": [
-            {"pathSuffix": ".Trash", "type": "DIRECTORY", "length": 0, "owner": "recocomputer", "group": "recocomputer",
-             "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0},
-            {"pathSuffix": "bestofs", "type": "DIRECTORY", "length": 0, "owner": "recocomputer",
-             "group": "recocomputer", "permission": "775", "accessTime": 0, "modificationTime": 1473691319065,
-             "blockSize": 0, "replication": 0}}
-        """
-
         j = json.loads(output)
-        statuses = j["FileStatuses"]
+        statuses = j["FileStatuses"]["FileStatus"]
         result = []
         for status in statuses:
             result.append(self.parse_status(status))
