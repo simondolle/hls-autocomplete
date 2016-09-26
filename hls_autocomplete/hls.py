@@ -36,9 +36,6 @@ class WebHdfsLister(object):
         self.user = user
 
     def list_status(self, path):
-        return self.hls(path)
-
-    def hls(self, path):
         p = self.get_process(path)
         hls_result = p.communicate()[0]
         hls_result = hls_result.decode("utf-8")
