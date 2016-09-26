@@ -31,9 +31,9 @@ class HlsLs(HlsSubprocess):
         return subprocess.Popen("ls -ld %s" % os.path.join(path, "*"), shell = True, stdout=subprocess.PIPE)
 
 class WebHdfsLister(object):
-    def __init__(self, path, webhdfs_server):
-        self.path = path
+    def __init__(self, webhdfs_server, user):
         self.webhdfs_server = webhdfs_server
+        self.user = user
 
     def list_status(self, path):
         return self.hls(path)
@@ -45,8 +45,6 @@ class WebHdfsLister(object):
         hls_return_code = p.returncode
         ls_parser = WebHdfsParser(path)
         hls_result = ls_parser.parse(hls_result)
-        for fileStatus in hls_result:
-            fileStatus.relpath = os.path.relpath(fileStatus.path, path)
         return hls_return_code, hls_result
 
     def get_process(self, path):
