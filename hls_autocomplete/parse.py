@@ -38,15 +38,7 @@ class LsParser(object):
         pass
 
     def parse_line(self, line):
-        m = re.search(" (/.*$)", line)
-        if m is None:
-            return None
-        filename = m.group(1)
-        m = re.match("^([rwxd+-]+)", line)
-        if m is None:
-            return None
-
-        regex = "^([rwxd@+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+([:\d]+)\s+([\w\/]+)"
+        regex = "^([rwxd@+-]+)\s+(\d+)\s+(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\w+)\s+([:\d]+)\s+(/.+)$"
 
         m = re.match(regex, line, re.UNICODE)
         if m is None:
@@ -69,7 +61,7 @@ class LsParser(object):
             year = int(m.group(8))
         except:
             year = datetime.datetime.now().year
-        path = m.group(9)
+        filename = m.group(9)
 
         date = datetime.date(year, month, day)
 

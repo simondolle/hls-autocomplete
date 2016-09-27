@@ -1,7 +1,7 @@
 import subprocess
 import os.path
 
-from update import LsParser, WebHdfsParser
+from parse import LsParser, WebHdfsParser
 
 class HlsSubprocess(object):
     def list_status(self, path):

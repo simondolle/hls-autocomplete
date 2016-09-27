@@ -3,7 +3,7 @@ import mock
 import datetime
 
 from hls_autocomplete.complete import get_path_to_complete, is_valid_path, SimpleCompleter
-from hls_autocomplete.update import FileStatus
+from hls_autocomplete.parse import FileStatus
 
 class TestGetPathToComplete(unittest.TestCase):
     def test_nominal_case(self):

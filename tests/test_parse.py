@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from hls_autocomplete.update import FileStatus, LsParser, WebHdfsParser
+from hls_autocomplete.parse import FileStatus, LsParser, WebHdfsParser
 
 class TestFileStatus(unittest.TestCase):
     def test_str(self):
@@ -24,10 +24,21 @@ class TestLsParser(unittest.TestCase):
         line = "drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"
         self.assertEquals(FileStatus("/Users/simon/Personal Documents", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 12, 27)), parser.parse_line(line))
 
+    def test_french_month(self):
+        parser = LsParser()
+        line = "drwx------+  8 simon  staff  272 27 jui  2015 /Users/simon/Personal Documents"
+        self.assertEquals(FileStatus("/Users/simon/Personal Documents", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 6, 27)), parser.parse_line(line))
+
+    def test_current_year(self):
+        parser = LsParser()
+        line = "drwx------+  8 simon  staff  272 27 jui  12:15 /Users/simon/Personal Documents"
+        self.assertEquals(FileStatus("/Users/simon/Personal Documents", "drwx------+", 8, "simon", "staff", 272, datetime.date(datetime.datetime.now().year, 6, 27)), parser.parse_line(line))
+
     def test_invalid_lines(self):
         parser = LsParser()
         self.assertEquals(None, parser.parse_line("8 simon  staff  272 27 dec  2015 /Users/simon/Personal Documents"))
         self.assertEquals(None, parser.parse_line("drwx------+  8 simon  staff  272 27 dec  2015"))
+        self.assertEquals(None, parser.parse_line("foo bar"))
 
     def test_parse(self):
         parser = LsParser()

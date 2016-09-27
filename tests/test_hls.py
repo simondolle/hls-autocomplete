@@ -4,7 +4,7 @@ import subprocess
 import datetime
 
 from hls_autocomplete.hls import HlsHdfs, WebHdfsLister
-from hls_autocomplete.update import FileStatus
+from hls_autocomplete.parse import FileStatus
 
 class TestHls(unittest.TestCase):
     @mock.patch("hls_autocomplete.hls.subprocess.Popen")
