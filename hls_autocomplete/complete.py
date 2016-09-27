@@ -4,7 +4,8 @@ import os.path
 import sys
 
 from utils import append_slash
-from hls import HlsLs
+from hls import HlsLs, WebHdfsLister
+from configuration import Configuration
 
 def get_path_to_complete(path):
     if path.endswith("/"):
@@ -34,7 +35,8 @@ class SimpleCompleter(object):
 def main():
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
-        lister = HlsLs()
+        configuration = Configuration.load()
+        lister = WebHdfsLister(configuration.user, configuration.webhdfsserver)
         completer = SimpleCompleter(lister)
         completions = completer.get_completions(input_path)
         completions = ["%s"%s for s in completions]

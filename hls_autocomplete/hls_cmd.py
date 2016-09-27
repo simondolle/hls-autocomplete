@@ -1,11 +1,13 @@
 from __future__ import print_function
 import sys
 
-from hls import HlsLs
+from hls import WebHdfsLister
+from configuration import Configuration
 
 def main():
     if len(sys.argv) > 1:
-        lister = HlsLs()
+        configuration = Configuration.load()
+        lister = WebHdfsLister(configuration.user, configuration.webhdfsserver)
         code, hls_result = lister.list_status(sys.argv[1])
         for path in hls_result:
             print(path)
