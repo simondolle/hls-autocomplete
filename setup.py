@@ -7,10 +7,6 @@ try:
 except ImportError:
     from distutils.core import setup
 
-
-#readme = open('README.rst').read()
-#history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-
 requirements = [
     # TODO: put package requirements here
 ]
@@ -52,6 +48,5 @@ setup(
             'hls = hls_autocomplete.hls_cmd:main'
         ]
     },
-    #test_suite='tests'
     test_suite = 'nose.collector'
 )
