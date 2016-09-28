@@ -77,8 +77,15 @@ class WebHdfsParser(object):
 
     def permissions_to_unix_name(self, is_dir, rights):
         is_dir_prefix = 'd' if is_dir else '-'
-        dic = {'7': 'rwx', '6': 'rw-', '5': 'r-x', '4': 'r--', '0': '---'}
-        return is_dir_prefix + ''.join(dic[x] for x in rights)
+        sticky = False
+        if len(rights) == 4 and rights[0] == '1':
+            sticky = True
+            rights = rights[1:]
+        dic = {'7': 'rwx', '6': 'rw-', '5': 'r-x', '4': 'r--', '3': '-wx', '2': '-w-', '1': '--x', '0': '---'}
+        result = is_dir_prefix + ''.join(dic[x] for x in rights)
+        if sticky:
+            result = result[:-1] + "t"
+        return result
 
     def parse_status(self, status):
         relpath = status["pathSuffix"]

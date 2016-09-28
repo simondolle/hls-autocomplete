@@ -56,6 +56,7 @@ class TestWebHdfsParser(unittest.TestCase):
         self.assertEqual("-rwxrwxrwx", parser.permissions_to_unix_name(False, "777"))
         self.assertEqual("-rw-rwxr--", parser.permissions_to_unix_name(False, "674"))
         self.assertEqual("d---------", parser.permissions_to_unix_name(True, "000"))
+        self.assertEqual("-rw-rwxr-t", parser.permissions_to_unix_name(False, "1674"))
 
     def test_parse_status(self):
         parser = WebHdfsParser("/foo")
