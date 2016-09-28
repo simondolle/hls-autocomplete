@@ -7,7 +7,7 @@ from configuration import Configuration
 def main():
     if len(sys.argv) > 1:
         configuration = Configuration.load()
-        lister = WebHdfsLister(configuration.user, configuration.webhdfsserver)
+        lister = WebHdfsLister(configuration.user, configuration.httpfs)
         code, hls_result = lister.list_status(sys.argv[1])
         for path in hls_result:
             print(path)

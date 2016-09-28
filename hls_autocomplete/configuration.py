@@ -1,10 +1,13 @@
 import os
 import json
 
+USER = "user"
+HTTPFS = "httpfs"
+
 class Configuration(object):
-    def __init__(self, user, webhdfsserver):
+    def __init__(self, user, httpfs):
         self.user = user
-        self.webhdfsserver = webhdfsserver
+        self.httpfs = httpfs
 
     @staticmethod
     def load(cl):
@@ -14,11 +17,11 @@ class Configuration(object):
     def load_from_file(cl):
         with open(cl.get_configuration_file_path()) as f:
             j = json.load(f.read())
-            if "user" not in j:
-                raise ValueError('Missing "user" key in conf file')
-            if "webhdfs" not in j:
-                raise ValueError('Missing "webhdfs" key in conf file')
-            return Configuration(j["user"], j["webhdfs"])
+            if USER not in j:
+                raise ValueError('Missing "%s" key in conf file' % USER)
+            if HTTPFS not in j:
+                raise ValueError('Missing "%s" key in conf file' % HTTPFS)
+            return Configuration(j[USER], j[HTTPFS])
 
     @staticmethod
     def get_configuration_file_path(cl):

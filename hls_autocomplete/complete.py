@@ -36,7 +36,7 @@ def main():
     if len(sys.argv) > 1:
         input_path = sys.argv[1].decode("utf-8")
         configuration = Configuration.load()
-        lister = WebHdfsLister(configuration.user, configuration.webhdfsserver)
+        lister = WebHdfsLister(configuration.user, configuration.httpfs)
         completer = SimpleCompleter(lister)
         completions = completer.get_completions(input_path)
         completions = ["%s"%s for s in completions]
