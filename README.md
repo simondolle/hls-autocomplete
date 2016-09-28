@@ -2,8 +2,7 @@
 hls-autocomplete
 ===================
 
-.. image:: https://travis-ci.org/simondolle/hls-autocomplete.svg?branch=master
-        :target: https://travis-ci.org/simondolle/hls-autocomplete
+[![Build Status](https://travis-ci.org/simondolle/hls-autocomplete.svg?branch=master)](https://travis-ci.org/simondolle/hls-autocomplete)
 
 hls_autocomplete is a tool that adds autocompletios to the `hdfs dfs -ls` and `hadoop dfs -ls` commands.
 
@@ -18,7 +17,9 @@ Configuration
 -------------
 
 Edit `.hls_autocomplete.conf`.
+
 Replace `USER` with your username and `HTTPFS` with your httpfs server.
+
 Copy `.hls_autocomplete.conf` to your home directory.
 
 Usage
