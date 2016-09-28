@@ -46,4 +46,6 @@ class WebHdfsLister(object):
 
     def get_process(self, path):
         http_adress = "%s%s?op=LISTSTATUS" % (self.webhdfs_server, path)
-        return subprocess.Popen(["curl", "--negotiate", "-i", "-L", "-u:%s" % self.user, http_adress])
+        devnull = open(os.devnull, "w")
+        return subprocess.Popen(["curl", "--negotiate", "-L", "-u:%s" % self.user, http_adress], stdout=subprocess.PIPE,
+                            stderr=devnull)

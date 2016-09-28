@@ -2,6 +2,7 @@ import unittest
 import mock
 import subprocess
 import datetime
+import os
 
 from hls_autocomplete.hls import HlsHdfs, WebHdfsLister
 from hls_autocomplete.parse import FileStatus
@@ -25,7 +26,7 @@ class TestWebHdfsLister(unittest.TestCase):
 
         lister = WebHdfsLister("server", "simon.dolle@gmail.com")
         self.assertEqual("cmd_result", lister.get_process("/foo/bar"))
-        popen_mock.assert_called_once_with(['curl', '--negotiate', '-i', '-L', '-u:simon.dolle@gmail.com', 'server/foo/bar?op=LISTSTATUS'])
+        popen_mock.assert_called_once_with(['curl', '--negotiate', '-L', '-u:simon.dolle@gmail.com', 'server/foo/bar?op=LISTSTATUS'], stdout = mock.ANY, stderr=mock.ANY)
 
     @mock.patch("hls_autocomplete.hls.subprocess.Popen")
     def test_nominal_case(self, popen_mock):
@@ -47,4 +48,6 @@ class TestWebHdfsLister(unittest.TestCase):
                      FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.date(2016, 9, 12), "qux")
                 ]),
                 lister.list_status("/foo"))
-            popen_mock.assert_called_once_with(['curl', '--negotiate', '-i', '-L', '-u:simon.dolle@gmail.com', 'server/foo?op=LISTSTATUS'])
+            devnull = open(os.devnull, "w")
+            popen_mock.assert_called_once_with(['curl', '--negotiate', '-L', '-u:simon.dolle@gmail.com', 'server/foo?op=LISTSTATUS'], stdout = mock.ANY, stderr=mock.ANY)
+
