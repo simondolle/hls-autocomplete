@@ -33,13 +33,17 @@ class FileStatus(object):
         return self.to_str(0, 0, 0, 0, 0, 0, 0)
 
     def to_str(self, rights_width, nbFiles_width, owner_width, group_width, size_width, date_width, path_with):
-        result = "%s  %s %s  %s  %s %s %s" % (self.rights.rjust(rights_width),
-                                              str(self.nbFiles).rjust(nbFiles_width),
-                                              self.owner.rjust(owner_width),
-                                              self.group.rjust(group_width),
-                                              str(self.size).rjust(size_width),
-                                              self.date.strftime("%d %b  %Y").lower().rjust(date_width),
-                                              self.path.rjust(path_with))
+	if self.is_dir:
+          nb_files = "-"
+	else:
+          nb_files = str(self.nbFiles)
+        result = "%s   %s %s %s          %s %s %s" % (self.rights.ljust(rights_width),
+                                             nb_files.ljust(nbFiles_width),
+                                             self.owner.ljust(owner_width),
+                                             self.group.ljust(group_width),
+                                             str(self.size).ljust(size_width),
+                                             self.date.strftime("%Y-%M-%d %H:%M").ljust(date_width),
+                                             self.path.ljust(path_with))
         return result.encode("utf-8")
 
 def get_file_statuses_pretty_print(file_statuses):
@@ -48,7 +52,7 @@ def get_file_statuses_pretty_print(file_statuses):
     owner_width = max([len(fs.owner) for fs in file_statuses])
     group_width = max([len(fs.group) for fs in file_statuses])
     size_width = max([len(str(fs.size)) for fs in file_statuses])
-    date_width = max([len(fs.date.strftime("%d %b  %Y")) for fs in file_statuses])
+    date_width = max([len(fs.date.strftime("%Y-%M-%d %H:%M")) for fs in file_statuses])
     path_width = max([len(fs.path) for fs in file_statuses])
 
     result = []
@@ -123,9 +127,10 @@ class WebHdfsParser(object):
 
         parsed_date = datetime.datetime.fromtimestamp(int(status["modificationTime"])/1000)
 
-        date = datetime.date(parsed_date.year, parsed_date.month, parsed_date.day)
+        date = datetime.datetime(parsed_date.year, parsed_date.month, parsed_date.day, parsed_date.hour, parsed_date.minute)
 
         return FileStatus(path, rights, nbFiles, owner, group, size, date, relpath)
+
 
     def parse(self, output):
         j = json.loads(output)
