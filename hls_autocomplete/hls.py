@@ -38,8 +38,10 @@ class WebHdfsLister(object):
     def list_status(self, path):
         p = self.get_process(path)
         hls_result = p.communicate()[0]
-        hls_result = hls_result.decode("utf-8")
         hls_return_code = p.returncode
+        if hls_return_code != 0:
+            return hls_return_code, []
+        hls_result = hls_result.decode("utf-8")
         ls_parser = WebHdfsParser(path)
         hls_result = ls_parser.parse(hls_result)
         return hls_return_code, hls_result
