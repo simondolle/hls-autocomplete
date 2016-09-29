@@ -68,3 +68,19 @@ class TestWebHdfsLister(unittest.TestCase):
         popen_mock.assert_called_once_with(
             ['curl', '--negotiate', '-L', '-u:simon.dolle@gmail.com', 'server/foo?op=LISTSTATUS'], stdout=mock.ANY,
             stderr=mock.ANY)
+
+    @mock.patch("hls_autocomplete.hls.subprocess.Popen")
+    def test_error_message_case(self, popen_mock):
+        process_mock = mock.MagicMock()
+        process_mock.communicate.return_value = '{"Error": ""}', None
+        process_mock.returncode = 0
+        popen_mock.return_value = process_mock
+
+        lister = WebHdfsLister("server", "simon.dolle@gmail.com")
+        self.assertEqual(
+            (0, []),
+            lister.list_status("/foo"))
+        devnull = open(os.devnull, "w")
+        popen_mock.assert_called_once_with(
+            ['curl', '--negotiate', '-L', '-u:simon.dolle@gmail.com', 'server/foo?op=LISTSTATUS'], stdout=mock.ANY,
+            stderr=mock.ANY)

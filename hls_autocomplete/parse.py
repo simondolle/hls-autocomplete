@@ -134,6 +134,8 @@ class WebHdfsParser(object):
 
     def parse(self, output):
         j = json.loads(output)
+        if "FileStatuses" not in j or "FileStatus" not in j["FileStatuses"]:
+            return []
         statuses = j["FileStatuses"]["FileStatus"]
         result = []
         for status in statuses:
