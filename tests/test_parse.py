@@ -5,8 +5,8 @@ from hls_autocomplete.parse import FileStatus, LsParser, WebHdfsParser, get_file
 
 class TestFileStatus(unittest.TestCase):
     def test_str(self):
-        fileStatus = FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.date(2015, 12, 27))
-        self.assertEquals("drwx------+  8 simon  staff  272 27 dec  2015 /Users/simon/Music", str(fileStatus))
+        fileStatus = FileStatus("/Users/simon/Music", "drwx------+", 8, "simon", "staff", 272, datetime.datetime(2015, 12, 27, 12, 10))
+        self.assertEquals("drwx------+   - simon staff          272 2015-10-27 12:10 /Users/simon/Music", str(fileStatus))
 
 class TestLsParser(unittest.TestCase):
     def test_nominal_case(self):
@@ -62,7 +62,7 @@ class TestWebHdfsParser(unittest.TestCase):
         parser = WebHdfsParser("/foo")
         input = {"pathSuffix": "bar", "type": "DIRECTORY", "length": 0, "owner": "simon", "group": "staff",
              "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0}
-        expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.date(2016, 04, 21),"bar")
+        expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 04, 21, 13, 0),"bar")
         self.assertEqual(expected_result, parser.parse_status(input))
 
     def test_parse(self):
@@ -75,8 +75,8 @@ class TestWebHdfsParser(unittest.TestCase):
         parser = WebHdfsParser("/foo")
 
         expected_result = [
-            FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.date(2016, 4, 21), "bar"),
-            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.date(2016, 9, 12), "qux")
+            FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 4, 21, 13, 0), "bar"),
+            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.datetime(2016, 9, 12, 16, 41), "qux")
         ]
         self.assertEqual(expected_result, parser.parse(input))
 
@@ -87,7 +87,7 @@ class TestGetFileStatutesPrettyPrint(unittest.TestCase):
             FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "root", 0, datetime.date(2016, 9, 12), "qux")
         ]
 
-        expected_result = ("drwx------  0 simon.dolle  staff  0 21 apr  2016 /foo/bar/qux\n"
-                           "-rwxrwxr-x  0       simon   root  0 12 sep  2016     /foo/qux")
+        expected_result = ("drwx------   - simon.dolle staff          0 2016-00-21 00:00 /foo/bar/qux\n"
+                           "-rwxrwxr-x   - simon       root           0 2016-00-12 00:00 /foo/qux    ")
         self.assertEqual(expected_result, get_file_statuses_pretty_print(file_statuses))
 
