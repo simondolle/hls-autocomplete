@@ -10,7 +10,8 @@ def main():
         configuration = Configuration.load()
         lister = WebHdfsLister(configuration.httpfs, configuration.user)
         code, hls_result = lister.list_status(sys.argv[1])
-        print(get_file_statuses_pretty_print(hls_result))
-
+        if code == 0:
+            print(get_file_statuses_pretty_print(hls_result))
+        sys.exit(code)
 if __name__ == "__main__":
     main()
