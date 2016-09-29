@@ -63,6 +63,7 @@ class TestWebHdfsParser(unittest.TestCase):
         input = {"pathSuffix": "bar", "type": "DIRECTORY", "length": 0, "owner": "simon", "group": "staff",
              "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0}
         expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 04, 21, 13, 0),"bar")
+        print parser.parse_status(input).date
         self.assertEqual(expected_result, parser.parse_status(input))
 
     def test_parse(self):
