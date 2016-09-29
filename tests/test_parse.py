@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from hls_autocomplete.parse import FileStatus, LsParser, WebHdfsParser
+from hls_autocomplete.parse import FileStatus, LsParser, WebHdfsParser, get_file_statuses_pretty_print
 
 class TestFileStatus(unittest.TestCase):
     def test_str(self):
@@ -79,3 +79,15 @@ class TestWebHdfsParser(unittest.TestCase):
             FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.date(2016, 9, 12), "qux")
         ]
         self.assertEqual(expected_result, parser.parse(input))
+
+class TestGetFileStatutesPrettyPrint(unittest.TestCase):
+    def test_nominal_case(self):
+        file_statuses = [
+            FileStatus("/foo/bar/qux", "drwx------", 0, "simon.dolle", "staff", 0, datetime.date(2016, 4, 21), "bar"),
+            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "root", 0, datetime.date(2016, 9, 12), "qux")
+        ]
+
+        expected_result = ("drwx------  0 simon.dolle  staff  0 21 apr  2016 /foo/bar/qux\n"
+                           "-rwxrwxr-x  0       simon   root  0 12 sep  2016     /foo/qux")
+        self.assertEqual(expected_result, get_file_statuses_pretty_print(file_statuses))
+

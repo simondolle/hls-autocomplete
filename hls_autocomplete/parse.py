@@ -30,8 +30,31 @@ class FileStatus(object):
         return self.rights.startswith("d")
 
     def __str__(self):
-        result = "%s  %d %s  %s  %d %s %s" % (self.rights, self.nbFiles, self.owner, self.group, self.size, self.date.strftime("%d %b  %Y").lower(), self.path)
+        return self.to_str(0, 0, 0, 0, 0, 0, 0)
+
+    def to_str(self, rights_width, nbFiles_width, owner_width, group_width, size_width, date_width, path_with):
+        result = "%s  %s %s  %s  %s %s %s" % (self.rights.rjust(rights_width),
+                                              str(self.nbFiles).rjust(nbFiles_width),
+                                              self.owner.rjust(owner_width),
+                                              self.group.rjust(group_width),
+                                              str(self.size).rjust(size_width),
+                                              self.date.strftime("%d %b  %Y").lower().rjust(date_width),
+                                              self.path.rjust(path_with))
         return result.encode("utf-8")
+
+def get_file_statuses_pretty_print(file_statuses):
+    rights_width = max([len(fs.rights) for fs in file_statuses])
+    nb_files_width = max([len(str(fs.nbFiles)) for fs in file_statuses])
+    owner_width = max([len(fs.owner) for fs in file_statuses])
+    group_width = max([len(fs.group) for fs in file_statuses])
+    size_width = max([len(str(fs.size)) for fs in file_statuses])
+    date_width = max([len(fs.date.strftime("%d %b  %Y")) for fs in file_statuses])
+    path_width = max([len(fs.path) for fs in file_statuses])
+
+    result = []
+    for file_status in file_statuses:
+        result.append(file_status.to_str(rights_width, nb_files_width, owner_width, group_width, size_width, date_width, path_width))
+    return "\n".join(result)
 
 class LsParser(object):
     def __init__(self):
