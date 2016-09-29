@@ -62,7 +62,7 @@ class TestWebHdfsParser(unittest.TestCase):
         parser = WebHdfsParser("/foo")
         input = {"pathSuffix": "bar", "type": "DIRECTORY", "length": 0, "owner": "simon", "group": "staff",
              "permission": "700", "accessTime": 0, "modificationTime": 1461236412807, "blockSize": 0, "replication": 0}
-        expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 04, 21, 13, 0),"bar")
+        expected_result = FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 04, 21, 11, 0),"bar")
         print parser.parse_status(input).date
         self.assertEqual(expected_result, parser.parse_status(input))
 
@@ -76,8 +76,8 @@ class TestWebHdfsParser(unittest.TestCase):
         parser = WebHdfsParser("/foo")
 
         expected_result = [
-            FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 4, 21, 13, 0), "bar"),
-            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.datetime(2016, 9, 12, 16, 41), "qux")
+            FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 4, 21, 11, 0), "bar"),
+            FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.datetime(2016, 9, 12, 14, 41), "qux")
         ]
         self.assertEqual(expected_result, parser.parse(input))
 

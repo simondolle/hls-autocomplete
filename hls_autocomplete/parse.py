@@ -125,7 +125,7 @@ class WebHdfsParser(object):
         right_digits = status["permission"]
         rights = self.permissions_to_unix_name(is_dir, right_digits)
 
-        parsed_date = datetime.datetime.fromtimestamp(int(status["modificationTime"])/1000)
+        parsed_date = datetime.datetime.utcfromtimestamp(int(status["modificationTime"])/1000)
 
         date = datetime.datetime(parsed_date.year, parsed_date.month, parsed_date.day, parsed_date.hour, parsed_date.minute)
 

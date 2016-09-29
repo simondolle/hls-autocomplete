@@ -45,8 +45,8 @@ class TestWebHdfsLister(unittest.TestCase):
 
             lister = WebHdfsLister("server", "simon.dolle@gmail.com")
             self.assertEqual(
-                (0, [FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 4, 21, 13, 0), "bar"),
-                     FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.datetime(2016, 9, 12, 16, 41), "qux")
+                (0, [FileStatus("/foo/bar", "drwx------", 0, "simon", "staff", 0, datetime.datetime(2016, 4, 21, 11, 0), "bar"),
+                     FileStatus("/foo/qux", "-rwxrwxr-x", 0, "simon", "staff", 0, datetime.datetime(2016, 9, 12, 14, 41), "qux")
                 ]),
                 lister.list_status("/foo"))
             devnull = open(os.devnull, "w")
