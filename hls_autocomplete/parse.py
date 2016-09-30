@@ -47,13 +47,22 @@ class FileStatus(object):
         return result.encode("utf-8")
 
 def get_file_statuses_pretty_print(file_statuses):
-    rights_width = max([len(fs.rights) for fs in file_statuses])
-    nb_files_width = max([len(str(fs.nbFiles)) for fs in file_statuses])
-    owner_width = max([len(fs.owner) for fs in file_statuses])
-    group_width = max([len(fs.group) for fs in file_statuses])
-    size_width = max([len(str(fs.size)) for fs in file_statuses])
-    date_width = max([len(fs.date.strftime("%Y-%M-%d %H:%M")) for fs in file_statuses])
-    path_width = max([len(fs.path) for fs in file_statuses])
+    rights_width = 0
+    nb_files_width = 0
+    owner_width = 0
+    group_width = 0
+    size_width = 0
+    date_width = 0
+    path_width = 0
+	
+    if len(file_statuses) != 0:	
+        rights_width = max([len(fs.rights) for fs in file_statuses])
+        nb_files_width = max([len(str(fs.nbFiles)) for fs in file_statuses])
+        owner_width = max([len(fs.owner) for fs in file_statuses])
+        group_width = max([len(fs.group) for fs in file_statuses])
+        size_width = max([len(str(fs.size)) for fs in file_statuses])
+        date_width = max([len(fs.date.strftime("%Y-%M-%d %H:%M")) for fs in file_statuses])
+        path_width = max([len(fs.path) for fs in file_statuses])
 
     result = []
     for file_status in file_statuses:
